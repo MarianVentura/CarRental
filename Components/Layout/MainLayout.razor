@@ -1,23 +1,157 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<!-- Barra de navegación (Navbar) con imagen de fondo -->
+<div class="navbar-container" id="navbar-container">
+    <div class="navbar navbar-expand-lg fixed-top custom-navbar" id="NavigationBar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" style="font-family: 'Poppins', sans-serif; font-size: 1.8rem; color: #ffba08;">CarRental</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" style="background-color: #ffba08;"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Inicio -->
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                            <span class="bi bi-house-door" aria-hidden="true" style="font-size: 1.4rem;"></span> Inicio
+                        </NavLink>
+                    </li>
+                    <!-- Alquileres -->
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/alquileres">
+                            <span class="bi bi-car-front" aria-hidden="true" style="font-size: 1.4rem;"></span> Alquileres
+                        </NavLink>
+                    </li>
+                    <!-- Vehículos -->
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/vehiculos">
+                            <span class="bi bi-car" aria-hidden="true" style="font-size: 1.4rem;"></span> Vehículos
+                        </NavLink>
+                    </li>
+                    <!-- Clientes -->
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/clientes">
+                            <span class="bi bi-person" aria-hidden="true" style="font-size: 1.4rem;"></span> Clientes
+                        </NavLink>
+                    </li>
+                </ul>
+            </div>
         </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    </div>
 </div>
 
+<main class="flex-grow-1 p-4 mt-5 pt-5 bg-white">
+    <div class="top-row d-flex justify-content-between align-items-center mb-4 bg-white p-2 top-rower" style="margin-top: 20px;">
+        <h5 style="font-family: 'Poppins', sans-serif; font-weight: bold; color: #ffba08;" class="fw-bold">
+            <strong style="width: 50px; height: 50px; margin-right: 15px;">
+                <i class="fa-solid fa-car"></i> CarRental
+            </strong>
+        </h5>
+    </div>
+
+    <article class="content bg-white">
+        @Body
+    </article>
+</main>
+
+<!-- Error UI -->
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+<style>
+    /* Contenedor de la Navbar con la imagen de fondo */
+    #navbar-container {
+        background-image: url('https://wallpapers-clan.com/wp-content/uploads/2024/06/retro-car-speeding-drive-desktop-wallpaper-preview.jpg');
+        background-size: cover; /* Asegura que la imagen cubra todo el contenedor */
+        background-position: center center; /* Centra la imagen */
+        background-attachment: fixed; /* Fija la imagen en su lugar cuando haces scroll */
+        height: 450px; /* Aumenta la altura para que la imagen ocupe más espacio */
+        padding-top: 80px; /* Ajusta para evitar que la navbar se solape con la imagen */
+    }
+
+    .custom-navbar {
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente para la navbar */
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .navbar-brand {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #ffba08; /* Amarillo cálido para el logo */
+    }
+
+    .nav-link {
+        transition: color 0.3s ease;
+        font-size: 1.2rem;
+        color: #ffffff;
+        font-weight: 500;
+    }
+
+        .nav-link:hover {
+            color: #ffffff;
+            background-color: #ffba08; /* Amarillo cálido al hacer hover */
+            border-radius: 5px;
+        }
+
+    .navbar-toggler-icon {
+        background-color: #ffffff; /* Blanco para el icono del toggle */
+    }
+
+    /* Fondo principal */
+    main {
+        background-color: #ffffff; /* Fondo blanco */
+        color: #1c3144; /* Azul oscuro para el texto */
+    }
+
+    /* Sección superior */
+    .top-row {
+        background-color: #ffba08; /* Amarillo cálido */
+        color: #1c3144; /* Azul oscuro */
+    }
+
+    .top-rower {
+        padding: 20px;
+    }
+
+    .mt-5 {
+        margin-top: 5rem;
+    }
+
+    /* Iconos */
+    .bi {
+        margin-right: 8px;
+        font-size: 1.4rem;
+    }
+
+    /* Estilos para el error */
+    #blazor-error-ui {
+        background-color: #d00000; /* Rojo brillante para los errores */
+        padding: 1rem;
+        color: #ffffff;
+        border-radius: 5px;
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+        #blazor-error-ui a.reload {
+            color: #fff;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+</style>
+
+<script>
+    window.addEventListener('scroll', function () {
+        const navbar = document.querySelector('.custom-navbar');
+        if (window.scrollY > 10) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+</script>
