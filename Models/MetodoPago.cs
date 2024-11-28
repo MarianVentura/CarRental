@@ -20,9 +20,8 @@ public class MetodoPago
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     public int ReservaId { get; set; }
 
-    [ForeignKey("ReservaId")]
-    public Reservas? Reserva { get; set; }
+    public string EstadoTransaccion { get; set; } = "Pendiente"; // Estado de la transacción
+    public string ProveedorPago { get; set; } // Ejemplo: "PayPal"
 
-    public string EstadoTransaccion { get; set; }
-    public string ProovedorPago { get; set; } //Ejemplo: "PayPal"
+    public virtual Reservas Reserva { get; set; }
 }
