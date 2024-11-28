@@ -2,50 +2,60 @@
 using CarRental.Data;
 using CarRental.Models;
 
-namespace CarRental.Services;
-
-public class VehiculosService
+namespace CarRental.Services
 {
-    private readonly Contexto _context;
-
-    public VehiculosService(Contexto context)
+    public class VehiculosService
     {
-        _context = context;
-    }
+        private readonly IDbContextFactory<Contexto> _dbContextFactory;
 
-    public async Task<List<Vehiculos>> ObtenerVehiculosAsync()
-    {
-        return await _context.Vehiculos.AsNoTracking().ToListAsync();
-    }
-
-    public async Task<Vehiculos?> ObtenerVehiculoPorIdAsync(int id)
-    {
-        return await _context.Vehiculos.AsNoTracking().FirstOrDefaultAsync(v => v.VehiculosId == id);
-    }
-
-    public async Task<bool> CrearVehiculoAsync(Vehiculos vehiculo)
-    {
-        _context.Vehiculos.Add(vehiculo);
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> ActualizarVehiculoAsync(Vehiculos vehiculo)
-    {
-        _context.Vehiculos.Update(vehiculo);
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> EliminarVehiculoAsync(int id)
-    {
-        var vehiculo = await _context.Vehiculos.FindAsync(id);
-        if (vehiculo != null)
+        public VehiculosService(IDbContextFactory<Contexto> dbContextFactory)
         {
-            _context.Vehiculos.Remove(vehiculo);
-            await _context.SaveChangesAsync();
+            _dbContextFactory = dbContextFactory;
+        }
+
+        public async Task<List<Vehiculos>> ObtenerVehiculosAsync()
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            return await contexto.Vehiculos
+                .AsNoTracking() // No se rastrean cambios en este caso
+                .ToListAsync();
+        }
+
+        public async Task<Vehiculos?> ObtenerVehiculoPorIdAsync(int id)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            return await contexto.Vehiculos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.VehiculosId == id);
+        }
+
+        public async Task<bool> CrearVehiculoAsync(Vehiculos vehiculo)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            contexto.Vehiculos.Add(vehiculo);
+            await contexto.SaveChangesAsync();
             return true;
         }
-        return false;
+
+        public async Task<bool> ActualizarVehiculoAsync(Vehiculos vehiculo)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            contexto.Vehiculos.Update(vehiculo);
+            await contexto.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> EliminarVehiculoAsync(int id)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            var vehiculo = await contexto.Vehiculos.FindAsync(id);
+            if (vehiculo != null)
+            {
+                contexto.Vehiculos.Remove(vehiculo);
+                await contexto.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }
