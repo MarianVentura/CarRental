@@ -38,12 +38,12 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 // Agregar los servicios de las entidades
-builder.Services.AddTransient<CategoriasService>();
-builder.Services.AddTransient<ClientesService>();
-builder.Services.AddTransient<MantenimientoVehiculoService>();
-builder.Services.AddTransient<MetodoPagoService>();
-builder.Services.AddTransient<ReservasService>();
-builder.Services.AddTransient<VehiculosService>();
+builder.Services.AddScoped<CategoriasService>();
+builder.Services.AddScoped<ClientesService>();
+builder.Services.AddScoped<MantenimientoVehiculoService>();
+builder.Services.AddScoped<MetodoPagoService>();
+builder.Services.AddScoped<ReservasService>();
+builder.Services.AddScoped<VehiculosService>();
 
 var app = builder.Build();
 
