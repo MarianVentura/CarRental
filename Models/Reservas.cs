@@ -2,44 +2,38 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace CarRental.Models
+namespace CarRental.Models;
+
+public class Reservas
 {
-    public class Reservas
-    {
-        [Key]
-        public int ReservaId { get; set; }
+    [Key]
+    public int ReservaId { get; set; }
 
-        [Required(ErrorMessage = "Este campo es obligatorio.")]
-        public int ClienteId { get; set; }
+    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    public int ClienteId { get; set; }
 
-        [ForeignKey("ClienteId")]
-        public Clientes? Cliente { get; set; }
+    public Clientes? Cliente { get; set; }
 
-        [Required(ErrorMessage = "Este campo es obligatorio.")]
-        public int VehiculoId { get; set; }
+    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    public int VehiculoId { get; set; }
 
-        [ForeignKey("VehiculosId")]
-        public Vehiculos? Vehiculo { get; set; }
+    public Vehiculos? Vehiculo { get; set; }
 
-        [Required(ErrorMessage = "Este campo es obligatorio.")]
-        public DateTime FechaRecogida { get; set; }
+    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    public DateTime FechaRecogida { get; set; }
 
-        [Required(ErrorMessage = "Este campo es obligatorio.")]
-        public DateTime FechaDevolucion { get; set; }
+    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    public DateTime FechaDevolucion { get; set; }
 
-        [Required(ErrorMessage = "Este campo es obligatorio.")]
-        public decimal TotalPrecio { get; set; }
+    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    public decimal TotalPrecio { get; set; }
 
-        [Required(ErrorMessage = "Este campo es obligatorio.")]
-        public string? Estado { get; set; } // Ejemplo: "Pendiente", "Confirmada", "Cancelada"
+    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    public string? Estado { get; set; }
 
-        public string? LugarRecogida { get; set; }
-        public string? LugarEntrega { get; set; }
-        public string? Comentarios { get; set; }
+    public string? LugarRecogida { get; set; }
+    public string? LugarEntrega { get; set; }
+    public string? Comentarios { get; set; }
 
-        public int? MetodoPagoId { get; set; }
-
-        [ForeignKey("MetodoPagoId")]
-        public MetodoPago? MetodoPago { get; set; }
-    }
+    public virtual MetodoPago? MetodoPago { get; set; }
 }
