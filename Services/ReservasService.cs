@@ -2,58 +2,64 @@
 using CarRental.Data;
 using CarRental.Models;
 
-namespace CarRental.Services;
-
-public class ReservasService
+namespace CarRental.Services
 {
-    private readonly Contexto _context;
-
-    public ReservasService(Contexto context)
+    public class ReservasService
     {
-        _context = context;
-    }
+        private readonly IDbContextFactory<Contexto> _dbContextFactory;
 
-    public async Task<List<Reservas>> ObtenerReservasAsync()
-    {
-        return await _context.Reservas
-            .Include(r => r.Cliente)
-            .Include(r => r.Vehiculo)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    public async Task<Reservas?> ObtenerReservaPorIdAsync(int id)
-    {
-        return await _context.Reservas
-            .Include(r => r.Cliente)
-            .Include(r => r.Vehiculo)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(r => r.ReservaId == id);
-    }
-
-    public async Task<bool> CrearReservaAsync(Reservas reserva)
-    {
-        _context.Reservas.Add(reserva);
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> ActualizarReservaAsync(Reservas reserva)
-    {
-        _context.Reservas.Update(reserva);
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> EliminarReservaAsync(int id)
-    {
-        var reserva = await _context.Reservas.FindAsync(id);
-        if (reserva != null)
+        public ReservasService(IDbContextFactory<Contexto> dbContextFactory)
         {
-            _context.Reservas.Remove(reserva);
-            await _context.SaveChangesAsync();
+            _dbContextFactory = dbContextFactory;
+        }
+
+        public async Task<List<Reservas>> ObtenerReservasAsync()
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking() // No se rastrean cambios para mejorar rendimiento
+                .ToListAsync();
+        }
+
+        public async Task<Reservas?> ObtenerReservaPorIdAsync(int id)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.ReservaId == id);
+        }
+
+        public async Task<bool> CrearReservaAsync(Reservas reserva)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            contexto.Reservas.Add(reserva);
+            await contexto.SaveChangesAsync();
             return true;
         }
-        return false;
+
+        public async Task<bool> ActualizarReservaAsync(Reservas reserva)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            contexto.Reservas.Update(reserva);
+            await contexto.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> EliminarReservaAsync(int id)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            var reserva = await contexto.Reservas.FindAsync(id);
+            if (reserva != null)
+            {
+                contexto.Reservas.Remove(reserva);
+                await contexto.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }
