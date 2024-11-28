@@ -2,16 +2,37 @@ using CarRental.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarRental.Data
+namespace CarRental.Data;
+
+public class Contexto(DbContextOptions<Contexto> options) : IdentityDbContext<ApplicationUser>(options)
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+    public DbSet<Clientes> Clientes { get; set; }
+    public DbSet<MetodoPago> MetodoPago { get; set; }
+    public DbSet<Vehiculos> Vehiculos { get; set; }
+    public DbSet<Categorias> Categorias { get; set; }
+    public DbSet<MantenimientoVehiculo> MantenimientoVehiculo { get; set; }
+    public DbSet<Reservas> Reservas { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<Clientes> Clientes { get; set; }
-        public DbSet<MetodoPago> MetodoPago { get; set; }
-        public DbSet<Vehiculos> Vehiculos { get; set; }
-        public DbSet<Categorias> Categorias { get; set; }
-        public DbSet<MantenimientoVehiculo> MantenimientoVehiculo { get; set; }
-        public DbSet<Reservas> Reservas { get; set; }
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<MantenimientoVehiculo>()
+            .Property(m => m.Costo)
+            .HasColumnType("decimal(18,2)"); // Define la precisión y escala
+
+        modelBuilder.Entity<MetodoPago>()
+            .Property(m => m.Monto)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reservas>()
+            .Property(r => r.TotalPrecio)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Vehiculos>()
+            .Property(v => v.PrecioPorDia)
+            .HasColumnType("decimal(18,2)");
     }
+
+
 }
