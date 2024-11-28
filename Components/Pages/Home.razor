@@ -2,6 +2,105 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<!-- Título principal -->
+<div class="hero-section text-center">
+    <h1 style="font-family: 'Poppins', sans-serif; color: #1c3144;">¡Bienvenido a <span style="color: #ffba08;">CarRental</span>!</h1>
+    <p class="lead" style="font-size: 1.3rem; color: #3f88c5;">Tu plataforma confiable para alquilar vehículos de forma fácil y rápida.</p>
 
-Welcome to your new app.
+    <!-- Imagen de vehículo o algo relacionado con el alquiler -->
+    <img src="https://wallpapers-clan.com/wp-content/uploads/2024/06/retro-car-speeding-drive-desktop-wallpaper-preview.jpg" alt="Alquiler de vehículos" class="img-fluid mt-4" style="max-width: 100%; height: auto; border-radius: 15px;">
+
+    <div class="cta-buttons mt-4">
+        <button class="btn btn-primary btn-lg" style="background-color: #ffba08; border-color: #ffba08; font-size: 1.2rem;">Ver Vehículos Disponibles</button>
+        <button class="btn btn-secondary btn-lg ms-3" style="background-color: #3f88c5; border-color: #3f88c5; font-size: 1.2rem;">Solicitar un Alquiler</button>
+    </div>
+</div>
+
+<!-- Descripción de las funcionalidades principales -->
+<div class="features-section text-center mt-5">
+    <h3 style="color: #1c3144;">¿Cómo Funciona?</h3>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-3">
+            <div class="feature-card" style="background-color: #a2aebb; padding: 20px; border-radius: 10px;">
+                <i class="bi bi-car-front" style="font-size: 3rem; color: #1c3144;"></i>
+                <h5 class="mt-3" style="color: #1c3144;">Explora Vehículos</h5>
+                <p>Revisa nuestra flota de vehículos disponibles para alquilar.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card" style="background-color: #a2aebb; padding: 20px; border-radius: 10px;">
+                <i class="bi bi-calendar-check" style="font-size: 3rem; color: #1c3144;"></i>
+                <h5 class="mt-3" style="color: #1c3144;">Reserva Rápida</h5>
+                <p>Reserva el vehículo de tu elección en pocos minutos.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card" style="background-color: #a2aebb; padding: 20px; border-radius: 10px;">
+                <i class="bi bi-person-check" style="font-size: 3rem; color: #1c3144;"></i>
+                <h5 class="mt-3" style="color: #1c3144;">Alquiler Seguro</h5>
+                <p>Disfruta de tu experiencia de alquiler con total tranquilidad.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Opcional: Testimonios de clientes -->
+<div class="testimonials-section text-center mt-5">
+    <h3 style="color: #1c3144;">Lo que dicen nuestros clientes</h3>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4">
+            <div class="testimonial-card" style="background-color: #a2aebb; padding: 20px; border-radius: 10px;">
+                <p style="color: #1c3144; font-style: italic;">"Excelente servicio, el vehículo estaba en perfecto estado y el proceso de reserva fue muy sencillo."</p>
+                <h6 style="color: #ffba08;">Juan Pérez</h6>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card" style="background-color: #a2aebb; padding: 20px; border-radius: 10px;">
+                <p style="color: #1c3144; font-style: italic;">"Tuve una experiencia fantástica. Definitivamente volveré a alquilar con CarRental."</p>
+                <h6 style="color: #ffba08;">María Gómez</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de contacto -->
+<div class="contact-section text-center mt-5">
+    <h3 style="color: #1c3144;">¿Tienes alguna pregunta?</h3>
+    <p style="font-size: 1.2rem; color: #3f88c5;">Contáctanos y te ayudaremos con tu alquiler.</p>
+    <button class="btn btn-info btn-lg" style="background-color: #3f88c5; border-color: #3f88c5; font-size: 1.2rem;">Contactar Soporte</button>
+</div>
+
+<style>
+    /* Sección Hero */
+    .hero-section {
+        padding: 50px 20px;
+        background-color: #ffba08;
+        color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-buttons button {
+        margin-top: 20px;
+    }
+
+    .features-section .feature-card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .features-section .feature-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .testimonials-section .testimonial-card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .testimonials-section .testimonial-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .contact-section button {
+        margin-top: 20px;
+    }
+</style>
