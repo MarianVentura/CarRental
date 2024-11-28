@@ -1,7 +1,7 @@
 using CarRental.Components;
 using CarRental.Components.Account;
 using CarRental.Data;
-using CarRental.Services; // Importa la carpeta de servicios
+using CarRental.Services; 
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
