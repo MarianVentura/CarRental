@@ -1,6 +1,7 @@
 using CarRental.Components;
 using CarRental.Components.Account;
 using CarRental.Data;
+using CarRental.Services; // Importa la carpeta de servicios
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,10 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+})
     .AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -35,6 +36,14 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+// Agregar los servicios de las entidades
+builder.Services.AddTransient<CategoriasService>();
+builder.Services.AddTransient<ClientesService>();
+builder.Services.AddTransient<MantenimientoVehiculoService>();
+builder.Services.AddTransient<MetodoPagoService>();
+builder.Services.AddTransient<ReservasService>();
+builder.Services.AddTransient<VehiculosService>();
 
 var app = builder.Build();
 
