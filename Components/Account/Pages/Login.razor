@@ -125,7 +125,6 @@
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                 <DataAnnotationsValidator />
 
-                <!-- ComboBox para seleccionar el rol antes de los campos de correo y contraseña -->
                 <div class="login-input">
                     <select @bind="Input.Role" class="form-control">
                         <option value="">Select Role</option>
@@ -149,7 +148,6 @@
                     <a href="Account/Register">Create a new account</a>
                 </div>
 
-                <!-- Botón de login dentro del card -->
                 <button type="submit" class="login-button">Log in</button>
             </EditForm>
         </section>
