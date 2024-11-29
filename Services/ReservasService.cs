@@ -13,7 +13,7 @@ namespace CarRental.Services
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<List<Reservas>> ObtenerReservasAsync()
+        public async Task<List<Reservas>> ObtenerReservas()
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.Reservas
@@ -23,7 +23,7 @@ namespace CarRental.Services
                 .ToListAsync();
         }
 
-        public async Task<Reservas?> ObtenerReservaPorIdAsync(int id)
+        public async Task<Reservas?> ObtenerReservaPorId(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.Reservas
@@ -33,7 +33,7 @@ namespace CarRental.Services
                 .FirstOrDefaultAsync(r => r.ReservaId == id);
         }
 
-        public async Task<bool> CrearReservaAsync(Reservas reserva)
+        public async Task<bool> CrearReserva(Reservas reserva)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.Reservas.Add(reserva);
@@ -41,7 +41,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> ActualizarReservaAsync(Reservas reserva)
+        public async Task<bool> ActualizarReserva(Reservas reserva)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.Reservas.Update(reserva);
@@ -49,7 +49,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> EliminarReservaAsync(int id)
+        public async Task<bool> EliminarReserva(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             var reserva = await contexto.Reservas.FindAsync(id);

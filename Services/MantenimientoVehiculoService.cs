@@ -13,16 +13,16 @@ namespace CarRental.Services
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<List<MantenimientoVehiculo>> ObtenerMantenimientosAsync()
+        public async Task<List<MantenimientoVehiculo>> ObtenerMantenimientos()
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.MantenimientoVehiculo
                 .Include(m => m.Vehiculo)
-                .AsNoTracking() // Mejor rendimiento sin seguimiento de cambios
+                .AsNoTracking() 
                 .ToListAsync();
         }
 
-        public async Task<MantenimientoVehiculo?> ObtenerMantenimientoPorIdAsync(int id)
+        public async Task<MantenimientoVehiculo?> ObtenerMantenimientoPorId(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.MantenimientoVehiculo
@@ -31,7 +31,7 @@ namespace CarRental.Services
                 .FirstOrDefaultAsync(m => m.MantenimientoId == id);
         }
 
-        public async Task<bool> CrearMantenimientoAsync(MantenimientoVehiculo mantenimiento)
+        public async Task<bool> CrearMantenimiento(MantenimientoVehiculo mantenimiento)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.MantenimientoVehiculo.Add(mantenimiento);
@@ -39,7 +39,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> ActualizarMantenimientoAsync(MantenimientoVehiculo mantenimiento)
+        public async Task<bool> ActualizarMantenimiento(MantenimientoVehiculo mantenimiento)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.MantenimientoVehiculo.Update(mantenimiento);
@@ -47,7 +47,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> EliminarMantenimientoAsync(int id)
+        public async Task<bool> EliminarMantenimiento(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             var mantenimiento = await contexto.MantenimientoVehiculo.FindAsync(id);

@@ -13,7 +13,7 @@ namespace CarRental.Services
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<List<Clientes>> ObtenerClientesAsync()
+        public async Task<List<Clientes>> ObtenerClientes()
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.Clientes
@@ -21,7 +21,7 @@ namespace CarRental.Services
                 .ToListAsync();
         }
 
-        public async Task<Clientes?> ObtenerClientePorIdAsync(int id)
+        public async Task<Clientes?> ObtenerClientePorId(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.Clientes
@@ -29,7 +29,7 @@ namespace CarRental.Services
                 .FirstOrDefaultAsync(c => c.ClienteId == id);
         }
 
-        public async Task<bool> CrearClienteAsync(Clientes cliente)
+        public async Task<bool> CrearCliente(Clientes cliente)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.Clientes.Add(cliente);
@@ -37,7 +37,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> ActualizarClienteAsync(Clientes cliente)
+        public async Task<bool> ActualizarCliente(Clientes cliente)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.Clientes.Update(cliente);
@@ -45,7 +45,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> EliminarClienteAsync(int id)
+        public async Task<bool> EliminarCliente(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             var cliente = await contexto.Clientes.FindAsync(id);

@@ -13,15 +13,15 @@ namespace CarRental.Services
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<List<Categorias>> ObtenerCategoriasAsync()
+        public async Task<List<Categorias>> ObtenerCategorias()
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.Categorias
-                .AsNoTracking() // Mejor rendimiento sin seguimiento de cambios
+                .AsNoTracking() 
                 .ToListAsync();
         }
 
-        public async Task<Categorias?> ObtenerCategoriaPorIdAsync(int id)
+        public async Task<Categorias?> ObtenerCategoriaPorId(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             return await contexto.Categorias
@@ -29,7 +29,7 @@ namespace CarRental.Services
                 .FirstOrDefaultAsync(c => c.CategoriaId == id);
         }
 
-        public async Task<bool> CrearCategoriaAsync(Categorias categoria)
+        public async Task<bool> CrearCategoria(Categorias categoria)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.Categorias.Add(categoria);
@@ -37,7 +37,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> ActualizarCategoriaAsync(Categorias categoria)
+        public async Task<bool> ActualizarCategoria(Categorias categoria)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             contexto.Categorias.Update(categoria);
@@ -45,7 +45,7 @@ namespace CarRental.Services
             return true;
         }
 
-        public async Task<bool> EliminarCategoriaAsync(int id)
+        public async Task<bool> EliminarCategoria(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
             var categoria = await contexto.Categorias.FindAsync(id);
