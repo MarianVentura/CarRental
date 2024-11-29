@@ -12,54 +12,116 @@
 
 <PageTitle>Log in</PageTitle>
 
-<h1>Log in</h1>
-<div class="row">
-    <div class="col-md-4">
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #a2aebb; /* Color de fondo claro de la paleta */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        display: flex;
+        width: 800px;
+        height: 400px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .illustration {
+        flex: 1;
+        background: url('https://numeralpaint.com/wp-content/uploads/2021/08/Aesthetic-Porsche-Car-paint-by-numbers.jpg') no-repeat center center;
+        background-size: cover;
+    }
+
+    .login-form {
+        flex: 1;
+        background-color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .login-form h1 {
+            margin: 0;
+            color: #1c3144; /* Azul oscuro de la paleta */
+        }
+
+        .login-form p {
+            margin: 10px 0 20px;
+            color: #1c3144; /* Azul oscuro */
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-form button {
+            padding: 10px;
+            background-color: #ffba08; /* Amarillo de la paleta */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px; /* Añadido espacio superior */
+        }
+
+            .login-form button:hover {
+                background-color: #d00000; /* Rojo de la paleta */
+            }
+
+        .login-form a {
+            color: #3f88c5; /* Azul claro de la paleta */
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+            .login-form a:hover {
+                text-decoration: underline;
+            }
+
+    .login-options {
+        margin-bottom: 20px; /* Espacio adicional entre enlaces y botón */
+    }
+
+        .login-options a {
+            display: block;
+            margin-bottom: 10px; /* Espacio entre los enlaces */
+        }
+</style>
+
+<div class="container">
+    <div class="illustration"></div>
+    <div class="login-form">
+        <h1>Welcome Back!</h1>
+        <p>Log in to your account</p>
         <section>
             <StatusMessage Message="@errorMessage" />
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                 <DataAnnotationsValidator />
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label for="email" class="form-label">Email</label>
+                <div class="login-input">
+                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label for="password" class="form-label">Password</label>
+                <div class="login-input">
+                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" />
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
-                        Remember me
-                    </label>
+                <div class="login-options">
+                    <a href="Account/ForgotPassword">Forgot your password?</a>
+                    <a href="Account/Register">Create a new account</a>
                 </div>
-                <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a href="Account/ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
+                <button type="submit" class="login-button">Log in</button>
             </EditForm>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            <ExternalLoginPicker />
         </section>
     </div>
 </div>
@@ -87,8 +149,6 @@
 
     public async Task LoginUser()
     {
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
         var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
