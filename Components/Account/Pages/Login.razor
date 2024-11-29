@@ -4,11 +4,12 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using CarRental.Data
-
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject UserManager<ApplicationUser> UserManager
 
 <PageTitle>Log in</PageTitle>
 
@@ -26,7 +27,7 @@
     .container {
         display: flex;
         width: 800px;
-        height: 400px;
+        height: 500px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         border-radius: 10px;
         overflow: hidden;
@@ -63,6 +64,21 @@
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+
+        .login-form select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            appearance: none; /* Quita el estilo predeterminado del select */
+            -webkit-appearance: none; /* Quita el estilo del select en Webkit */
+            -moz-appearance: none; /* Quita el estilo del select en Firefox */
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/38/Down_Arrow_Icon.svg'); /* Flecha hacia abajo */
+            background-position: right 10px center;
+            background-repeat: no-repeat;
+            background-size: 1.2em;
         }
 
         .login-form button {
@@ -108,6 +124,17 @@
             <StatusMessage Message="@errorMessage" />
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                 <DataAnnotationsValidator />
+
+                <!-- ComboBox para seleccionar el rol antes de los campos de correo y contraseña -->
+                <div class="login-input">
+                    <select @bind="Input.Role" class="form-control">
+                        <option value="">Select Role</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Cliente">Cliente</option>
+                    </select>
+                    <ValidationMessage For="() => Input.Role" class="text-danger" />
+                </div>
+
                 <div class="login-input">
                     <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
@@ -116,10 +143,13 @@
                     <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" />
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
+
                 <div class="login-options">
                     <a href="Account/ForgotPassword">Forgot your password?</a>
                     <a href="Account/Register">Create a new account</a>
                 </div>
+
+                <!-- Botón de login dentro del card -->
                 <button type="submit" class="login-button">Log in</button>
             </EditForm>
         </section>
@@ -149,26 +179,61 @@
 
     public async Task LoginUser()
     {
-        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-        if (result.Succeeded)
+        if (string.IsNullOrEmpty(Input.Role))
         {
-            Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
+            errorMessage = "Please select a role.";
+            return;
         }
-        else if (result.RequiresTwoFactor)
+
+        var user = await UserManager.FindByEmailAsync(Input.Email);
+
+        if (user != null)
         {
-            RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
-        }
-        else if (result.IsLockedOut)
-        {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
+            // Check if the role matches
+            var roles = await UserManager.GetRolesAsync(user);
+
+            if ((Input.Role == "Admin" && roles.Contains("Admin")) ||
+                (Input.Role == "Cliente" && roles.Contains("Cliente")))
+            {
+                var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    Logger.LogInformation("User logged in.");
+
+                    // Redirigir a la página correspondiente según el rol
+                    if (Input.Role == "Admin")
+                    {
+                        NavigationManager.NavigateTo("/Index/Admin");
+                    }
+                    else if (Input.Role == "Cliente")
+                    {
+                        NavigationManager.NavigateTo("/Index/Cliente");
+                    }
+                }
+                else if (result.RequiresTwoFactor)
+                {
+                    RedirectManager.RedirectTo(
+                        "Account/LoginWith2fa",
+                        new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+                }
+                else if (result.IsLockedOut)
+                {
+                    Logger.LogWarning("User account locked out.");
+                    RedirectManager.RedirectTo("Account/Lockout");
+                }
+                else
+                {
+                    errorMessage = "Error: Invalid login attempt.";
+                }
+            }
+            else
+            {
+                errorMessage = "Error: User does not have the selected role.";
+            }
         }
         else
         {
-            errorMessage = "Error: Invalid login attempt.";
+            errorMessage = "User not found.";
         }
     }
 
@@ -181,6 +246,9 @@
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = "";
+
+        [Required]
+        public string Role { get; set; } = "";
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
