@@ -10,22 +10,22 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register confirmation</PageTitle>
+<PageTitle>Confirmación de registro</PageTitle>
 
-<h1>Register confirmation</h1>
+<h1>Confirmación de registro</h1>
 
 <StatusMessage Message="@statusMessage" />
 
 @if (emailConfirmationLink is not null)
 {
     <p>
-        This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-        Normally this would be emailed: <a href="@emailConfirmationLink">Click here to confirm your account</a>
+        Esta aplicación actualmente no tiene un servicio de correo electrónico real registrado, consulte <a href="https://aka.ms/aspaccountconf">esta documentación</a> para saber cómo configurar un servicio de correo real.
+        Normalmente se enviaría por correo electrónico: <a href="@emailConfirmationLink">Haga clic aquí para confirmar su cuenta</a>
     </p>
 }
 else
 {
-    <p>Please check your email to confirm your account.</p>
+    <p>Por favor, revise su correo electrónico para confirmar su cuenta.</p>
 }
 
 @code {
@@ -52,11 +52,11 @@ else
         if (user is null)
         {
             HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            statusMessage = "Error finding user for unspecified email";
+            statusMessage = "Error al encontrar el usuario para el correo electrónico no especificado";
         }
         else if (EmailSender is IdentityNoOpEmailSender)
         {
-            // Once you add a real email sender, you should remove this code that lets you confirm the account
+            // Una vez que agregue un servicio de correo electrónico real, debe eliminar este código que le permite confirmar la cuenta
             var userId = await UserManager.GetUserIdAsync(user);
             var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
