@@ -98,6 +98,9 @@ namespace CarRental.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImagenURL")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,6 +140,33 @@ namespace CarRental.Migrations
                     b.HasKey("ClienteId");
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("CarRental.Models.Combustible", b =>
+                {
+                    b.Property<int>("CombustibleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CombustibleId"));
+
+                    b.Property<decimal>("CostoPorLitro")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Politica")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CombustibleId");
+
+                    b.ToTable("Combustible");
                 });
 
             modelBuilder.Entity("CarRental.Models.MantenimientoVehiculo", b =>
@@ -181,6 +211,9 @@ namespace CarRental.Migrations
 
                     b.Property<DateTime>("FechaTransaccion")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Moneda")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Monto")
                         .HasColumnType("decimal(18,2)");
@@ -234,6 +267,15 @@ namespace CarRental.Migrations
                     b.Property<string>("LugarRecogida")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NivelCombustibleDevolucion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NivelCombustibleRecogida")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SeguroId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("TotalPrecio")
                         .HasColumnType("decimal(18,2)");
 
@@ -244,9 +286,40 @@ namespace CarRental.Migrations
 
                     b.HasIndex("ClienteId");
 
+                    b.HasIndex("SeguroId");
+
                     b.HasIndex("VehiculoId");
 
                     b.ToTable("Reservas");
+                });
+
+            modelBuilder.Entity("CarRental.Models.Seguros", b =>
+                {
+                    b.Property<int>("SeguroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SeguroId"));
+
+                    b.Property<string>("Cobertura")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Costo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Proveedor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SeguroId");
+
+                    b.ToTable("Seguros");
                 });
 
             modelBuilder.Entity("CarRental.Models.Vehiculos", b =>
@@ -257,20 +330,34 @@ namespace CarRental.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehiculosId"));
 
+                    b.Property<int>("Asientos")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Año")
+                        .HasColumnType("int");
+
                     b.Property<string>("Categoria")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CombustibleId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Disponible")
                         .HasColumnType("bit");
 
                     b.Property<string>("HistorialMantenimiento")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagenURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Kilometraje")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Marca")
                         .IsRequired()
@@ -284,10 +371,31 @@ namespace CarRental.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NumeroPlaca")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("PrecioPorDia")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("Puertas")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeguroId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Transmision")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("VehiculosId");
+
+                    b.HasIndex("CombustibleId");
+
+                    b.HasIndex("SeguroId");
 
                     b.ToTable("Vehiculos");
                 });
@@ -455,6 +563,10 @@ namespace CarRental.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CarRental.Models.Seguros", "Seguro")
+                        .WithMany()
+                        .HasForeignKey("SeguroId");
+
                     b.HasOne("CarRental.Models.Vehiculos", "Vehiculo")
                         .WithMany()
                         .HasForeignKey("VehiculoId")
@@ -463,7 +575,28 @@ namespace CarRental.Migrations
 
                     b.Navigation("Cliente");
 
+                    b.Navigation("Seguro");
+
                     b.Navigation("Vehiculo");
+                });
+
+            modelBuilder.Entity("CarRental.Models.Vehiculos", b =>
+                {
+                    b.HasOne("CarRental.Models.Combustible", "Combustible")
+                        .WithMany()
+                        .HasForeignKey("CombustibleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarRental.Models.Seguros", "Seguro")
+                        .WithMany()
+                        .HasForeignKey("SeguroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Combustible");
+
+                    b.Navigation("Seguro");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
