@@ -44,6 +44,8 @@ builder.Services.AddScoped<MantenimientoVehiculoService>();
 builder.Services.AddScoped<MetodoPagoService>();
 builder.Services.AddScoped<ReservasService>();
 builder.Services.AddScoped<VehiculosService>();
+builder.Services.AddScoped<CombustibleService>();
+builder.Services.AddScoped<SegurosService>();
 
 var app = builder.Build();
 
