@@ -12,6 +12,9 @@ public class Contexto(DbContextOptions<Contexto> options) : IdentityDbContext<Ap
     public DbSet<Categorias> Categorias { get; set; }
     public DbSet<MantenimientoVehiculo> MantenimientoVehiculo { get; set; }
     public DbSet<Reservas> Reservas { get; set; }
+    public DbSet<Combustible> Combustible { get; set; }
+    public DbSet<Seguros> Seguros { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
