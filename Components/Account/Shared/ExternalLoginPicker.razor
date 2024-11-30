@@ -9,8 +9,10 @@
 {
     <div>
         <p>
-            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-            about setting up this ASP.NET application to support logging in via external services</a>.
+            No hay servicios de autenticación externos configurados. Consulta este <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                artículo
+                sobre cómo configurar esta aplicación ASP.NET para soportar el inicio de sesión mediante servicios externos
+            </a>.
         </p>
     </div>
 }
@@ -23,7 +25,7 @@ else
             <p>
                 @foreach (var provider in externalLogins)
                 {
-                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Iniciar sesión con tu cuenta @provider.DisplayName">@provider.DisplayName</button>
                 }
             </p>
         </div>
