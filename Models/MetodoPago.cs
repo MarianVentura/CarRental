@@ -24,4 +24,5 @@ public class MetodoPago
     public string ProveedorPago { get; set; } // Ejemplo: "PayPal"
 
     public virtual Reservas Reserva { get; set; }
+    public string? Moneda { get; set; } // Ejemplo: "USD", "EUR", "DOP"
 }
