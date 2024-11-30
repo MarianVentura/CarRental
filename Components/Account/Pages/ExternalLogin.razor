@@ -16,17 +16,17 @@
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ExternalLogin> Logger
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Registrar</PageTitle>
 
 <StatusMessage Message="@message" />
-<h1>Register</h1>
-<h2>Associate your @ProviderDisplayName account.</h2>
+<h1>Registrar</h1>
+<h2>Asocia tu cuenta de @ProviderDisplayName.</h2>
 <hr />
 
-<div  class="alert alert-info">
-    You've successfully authenticated with <strong>@ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
+<div class="alert alert-info">
+    Te has autenticado correctamente con <strong>@ProviderDisplayName</strong>.
+    Por favor, ingresa una dirección de correo electrónico para este sitio a continuación y haz clic en el botón Registrar para terminar
+    de iniciar sesión.
 </div>
 
 <div class="row">
@@ -35,11 +35,11 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email." />
-                <label for="email" class="form-label">Email</label>
+                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="email" placeholder="Por favor ingresa tu correo electrónico." />
+                <label for="email" class="form-label">Correo electrónico</label>
                 <ValidationMessage For="() => Input.Email" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Registrar</button>
         </EditForm>
     </div>
 </div>
@@ -71,13 +71,13 @@
     {
         if (RemoteError is not null)
         {
-            RedirectManager.RedirectToWithStatus("Account/Login", $"Error from external provider: {RemoteError}", HttpContext);
+            RedirectManager.RedirectToWithStatus("Account/Login", $"Error del proveedor externo: {RemoteError}", HttpContext);
         }
 
         var info = await SignInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
-            RedirectManager.RedirectToWithStatus("Account/Login", "Error loading external login information.", HttpContext);
+            RedirectManager.RedirectToWithStatus("Account/Login", "Error al cargar la información de inicio de sesión externa.", HttpContext);
         }
 
         externalLoginInfo = info;
@@ -90,15 +90,15 @@
                 return;
             }
 
-            // We should only reach this page via the login callback, so redirect back to
-            // the login page if we get here some other way.
+            // Solo debemos llegar a esta página a través de la devolución de llamada de inicio de sesión, así que redirigimos de nuevo
+            // a la página de inicio de sesión si llegamos aquí de otra manera.
             RedirectManager.RedirectTo("Account/Login");
         }
     }
 
     private async Task OnLoginCallbackAsync()
     {
-        // Sign in the user with this external login provider if the user already has a login.
+        // Inicia sesión con este proveedor de inicio de sesión externo si el usuario ya tiene una cuenta.
         var result = await SignInManager.ExternalLoginSignInAsync(
             externalLoginInfo.LoginProvider,
             externalLoginInfo.ProviderKey,
@@ -108,7 +108,7 @@
         if (result.Succeeded)
         {
             Logger.LogInformation(
-                "{Name} logged in with {LoginProvider} provider.",
+                "{Name} inició sesión con el proveedor {LoginProvider}.",
                 externalLoginInfo.Principal.Identity?.Name,
                 externalLoginInfo.LoginProvider);
             RedirectManager.RedirectTo(ReturnUrl);
@@ -118,7 +118,7 @@
             RedirectManager.RedirectTo("Account/Lockout");
         }
 
-        // If the user does not have an account, then ask the user to create an account.
+        // Si el usuario no tiene una cuenta, entonces pedimos que cree una cuenta.
         if (externalLoginInfo.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
         {
             Input.Email = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
@@ -139,7 +139,7 @@
             result = await UserManager.AddLoginAsync(user, externalLoginInfo);
             if (result.Succeeded)
             {
-                Logger.LogInformation("User created an account using {Name} provider.", externalLoginInfo.LoginProvider);
+                Logger.LogInformation("El usuario creó una cuenta usando el proveedor {Name}.", externalLoginInfo.LoginProvider);
 
                 var userId = await UserManager.GetUserIdAsync(user);
                 var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -150,7 +150,7 @@
                     new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
                 await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
 
-                // If account confirmation is required, we need to show the link if we don't have a real email sender
+                // Si la confirmación de la cuenta es requerida, necesitamos mostrar el enlace si no tenemos un verdadero remitente de correo electrónico
                 if (UserManager.Options.SignIn.RequireConfirmedAccount)
                 {
                     RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = Input.Email });
@@ -172,8 +172,8 @@
         }
         catch
         {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor");
+            throw new InvalidOperationException($"No se puede crear una instancia de '{nameof(ApplicationUser)}'. " +
+                $"Asegúrate de que '{nameof(ApplicationUser)}' no sea una clase abstracta y tenga un constructor sin parámetros");
         }
     }
 
@@ -181,7 +181,7 @@
     {
         if (!UserManager.SupportsUserEmail)
         {
-            throw new NotSupportedException("The default UI requires a user store with email support.");
+            throw new NotSupportedException("La UI predeterminada requiere una tienda de usuarios con soporte de correo electrónico.");
         }
         return (IUserEmailStore<ApplicationUser>)UserStore;
     }
