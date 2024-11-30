@@ -11,7 +11,7 @@
 @inject IdentityRedirectManager RedirectManager
 @inject UserManager<ApplicationUser> UserManager
 
-<PageTitle>Log in</PageTitle>
+<PageTitle>Iniciar sesión</PageTitle>
 
 <style>
     body {
@@ -35,7 +35,7 @@
 
     .illustration {
         flex: 1;
-        background: url('https://numeralpaint.com/wp-content/uploads/2021/08/Aesthetic-Porsche-Car-paint-by-numbers.jpg') no-repeat center center;
+        background: url('https://urlshort.app/CDE4D4') no-repeat center center;
         background-size: cover;
     }
 
@@ -118,8 +118,8 @@
 <div class="container">
     <div class="illustration"></div>
     <div class="login-form">
-        <h1>Welcome Back!</h1>
-        <p>Log in to your account</p>
+        <h1>¡Bienvenido de nuevo!</h1>
+        <p>Inicia sesión en tu cuenta</p>
         <section>
             <StatusMessage Message="@errorMessage" />
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
@@ -127,28 +127,28 @@
 
                 <div class="login-input">
                     <select @bind="Input.Role" class="form-control">
-                        <option value="">Select Role</option>
-                        <option value="Admin">Admin</option>
+                        <option value="">Seleccionar rol</option>
+                        <option value="Admin">Administrador</option>
                         <option value="Cliente">Cliente</option>
                     </select>
                     <ValidationMessage For="() => Input.Role" class="text-danger" />
                 </div>
 
                 <div class="login-input">
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
+                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="Correo electrónico" />
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
                 <div class="login-input">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" />
+                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Contraseña" />
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
 
                 <div class="login-options">
-                    <a href="Account/ForgotPassword">Forgot your password?</a>
-                    <a href="Account/Register">Create a new account</a>
+                    <a href="Account/ForgotPassword">¿Olvidaste tu contraseña?</a>
+                    <a href="Account/Register">Crear una nueva cuenta</a>
                 </div>
 
-                <button type="submit" class="login-button">Log in</button>
+                <button type="submit" class="login-button">Iniciar sesión</button>
             </EditForm>
         </section>
     </div>
@@ -179,7 +179,7 @@
     {
         if (string.IsNullOrEmpty(Input.Role))
         {
-            errorMessage = "Please select a role.";
+            errorMessage = "Por favor, selecciona un rol.";
             return;
         }
 
@@ -196,7 +196,7 @@
                 var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    Logger.LogInformation("User logged in.");
+                    Logger.LogInformation("Usuario iniciado sesión.");
 
                     // Redirigir a la página correspondiente según el rol
                     if (Input.Role == "Admin")
@@ -216,22 +216,22 @@
                 }
                 else if (result.IsLockedOut)
                 {
-                    Logger.LogWarning("User account locked out.");
+                    Logger.LogWarning("Cuenta de usuario bloqueada.");
                     RedirectManager.RedirectTo("Account/Lockout");
                 }
                 else
                 {
-                    errorMessage = "Error: Invalid login attempt.";
+                    errorMessage = "Error: Intento de inicio de sesión inválido.";
                 }
             }
             else
             {
-                errorMessage = "Error: User does not have the selected role.";
+                errorMessage = "Error: El usuario no tiene el rol seleccionado.";
             }
         }
         else
         {
-            errorMessage = "User not found.";
+            errorMessage = "Usuario no encontrado.";
         }
     }
 
@@ -248,7 +248,7 @@
         [Required]
         public string Role { get; set; } = "";
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "¿Recordarme?")]
         public bool RememberMe { get; set; }
     }
 }
