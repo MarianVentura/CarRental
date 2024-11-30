@@ -28,6 +28,14 @@ namespace CarRental.Services
                 .AsNoTracking()
                 .FirstOrDefaultAsync(v => v.VehiculosId == id);
         }
+        public async Task<List<Vehiculos>> ObtenerVehiculosPorCategoria(string categoria)
+        {
+            await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+            return await contexto.Vehiculos
+                .Where(v => v.Categoria.Contains(categoria))
+                .AsNoTracking()
+                .ToListAsync();
+        }
 
         public async Task<bool> CrearVehiculo(Vehiculos vehiculo)
         {
