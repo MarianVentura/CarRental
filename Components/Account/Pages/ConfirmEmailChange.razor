@@ -9,9 +9,9 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Confirm email change</PageTitle>
+<PageTitle>Confirmar cambio de correo electrónico</PageTitle>
 
-<h1>Confirm email change</h1>
+<h1>Confirmar cambio de correo electrónico</h1>
 
 <StatusMessage Message="@message" />
 
@@ -35,13 +35,13 @@
         if (UserId is null || Email is null || Code is null)
         {
             RedirectManager.RedirectToWithStatus(
-                "Account/Login", "Error: Invalid email change confirmation link.", HttpContext);
+                "Account/Login", "Error: Enlace de confirmación de cambio de correo electrónico no válido.", HttpContext);
         }
 
         var user = await UserManager.FindByIdAsync(UserId);
         if (user is null)
         {
-            message = "Unable to find user with Id '{userId}'";
+            message = "No se pudo encontrar al usuario con Id '{userId}'";
             return;
         }
 
@@ -49,20 +49,20 @@
         var result = await UserManager.ChangeEmailAsync(user, Email, code);
         if (!result.Succeeded)
         {
-            message = "Error changing email.";
+            message = "Error al cambiar el correo electrónico.";
             return;
         }
 
-        // In our UI email and user name are one and the same, so when we update the email
-        // we need to update the user name.
+        // En nuestra UI, el correo electrónico y el nombre de usuario son lo mismo, por lo que cuando actualizamos el correo electrónico
+        // también debemos actualizar el nombre de usuario.
         var setUserNameResult = await UserManager.SetUserNameAsync(user, Email);
         if (!setUserNameResult.Succeeded)
         {
-            message = "Error changing user name.";
+            message = "Error al cambiar el nombre de usuario.";
             return;
         }
 
         await SignInManager.RefreshSignInAsync(user);
-        message = "Thank you for confirming your email change.";
+        message = "Gracias por confirmar el cambio de correo electrónico.";
     }
 }
