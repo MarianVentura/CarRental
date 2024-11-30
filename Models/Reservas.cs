@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace CarRental.Models;
 
 public class Reservas
@@ -34,6 +33,18 @@ public class Reservas
     public string? LugarRecogida { get; set; }
     public string? LugarEntrega { get; set; }
     public string? Comentarios { get; set; }
+
+    // Nuevo campo: Nivel de combustible al recoger
+    public string? NivelCombustibleRecogida { get; set; }
+
+    // Nuevo campo: Nivel de combustible al devolver
+    public string? NivelCombustibleDevolucion { get; set; }
+
+    // Nuevo campo: Seguro asociado a la reserva
+    public int? SeguroId { get; set; }
+
+    [ForeignKey("SeguroId")]
+    public Seguros? Seguro { get; set; }
 
     public virtual MetodoPago? MetodoPago { get; set; }
 }
