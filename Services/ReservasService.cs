@@ -36,6 +36,15 @@ namespace CarRental.Services
         public async Task<bool> CrearReserva(Reservas reserva)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
+
+            // Verifica que el vehículo esté disponible
+            var vehiculoDisponible = await contexto.Vehiculos
+                .AnyAsync(v => v.VehiculosId == reserva.VehiculoId && v.Disponible);
+            if (!vehiculoDisponible)
+            {
+                return false; // El vehículo no está disponible
+            }
+
             contexto.Reservas.Add(reserva);
             await contexto.SaveChangesAsync();
             return true;
