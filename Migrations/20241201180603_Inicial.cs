@@ -51,7 +51,7 @@ namespace CarRental.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categorias",
+                name: "Categoria",
                 columns: table => new
                 {
                     CategoriaId = table.Column<int>(type: "int", nullable: false)
@@ -62,11 +62,11 @@ namespace CarRental.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categorias", x => x.CategoriaId);
+                    table.PrimaryKey("PK_Categoria", x => x.CategoriaId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clientes",
+                name: "Cliente",
                 columns: table => new
                 {
                     ClienteId = table.Column<int>(type: "int", nullable: false)
@@ -79,7 +79,7 @@ namespace CarRental.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clientes", x => x.ClienteId);
+                    table.PrimaryKey("PK_Cliente", x => x.ClienteId);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,7 +90,7 @@ namespace CarRental.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Politica = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CostoPorLitro = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CostoPorLitro = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -222,41 +222,40 @@ namespace CarRental.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vehiculos",
+                name: "Vehiculo",
                 columns: table => new
                 {
-                    VehiculosId = table.Column<int>(type: "int", nullable: false)
+                    VehiculoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Marca = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Modelo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrecioPorDia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Año = table.Column<int>(type: "int", nullable: false),
                     Categoria = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrecioPorDia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Disponible = table.Column<bool>(type: "bit", nullable: false),
                     ImagenURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HistorialMantenimiento = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CombustibleId = table.Column<int>(type: "int", nullable: false),
                     SeguroId = table.Column<int>(type: "int", nullable: false),
-                    Año = table.Column<int>(type: "int", nullable: false),
                     Transmision = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Puertas = table.Column<int>(type: "int", nullable: false),
                     Asientos = table.Column<int>(type: "int", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumeroPlaca = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Kilometraje = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Kilometraje = table.Column<decimal>(type: "decimal(10,1)", nullable: false),
                     Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vehiculos", x => x.VehiculosId);
+                    table.PrimaryKey("PK_Vehiculo", x => x.VehiculoId);
                     table.ForeignKey(
-                        name: "FK_Vehiculos_Combustible_CombustibleId",
+                        name: "FK_Vehiculo_Combustible_CombustibleId",
                         column: x => x.CombustibleId,
                         principalTable: "Combustible",
                         principalColumn: "CombustibleId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Vehiculos_Seguros_SeguroId",
+                        name: "FK_Vehiculo_Seguros_SeguroId",
                         column: x => x.SeguroId,
                         principalTable: "Seguros",
                         principalColumn: "SeguroId",
@@ -278,10 +277,10 @@ namespace CarRental.Migrations
                 {
                     table.PrimaryKey("PK_MantenimientoVehiculo", x => x.MantenimientoId);
                     table.ForeignKey(
-                        name: "FK_MantenimientoVehiculo_Vehiculos_VehiculoId",
+                        name: "FK_MantenimientoVehiculo_Vehiculo_VehiculoId",
                         column: x => x.VehiculoId,
-                        principalTable: "Vehiculos",
-                        principalColumn: "VehiculosId",
+                        principalTable: "Vehiculo",
+                        principalColumn: "VehiculoId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -308,9 +307,9 @@ namespace CarRental.Migrations
                 {
                     table.PrimaryKey("PK_Reservas", x => x.ReservaId);
                     table.ForeignKey(
-                        name: "FK_Reservas_Clientes_ClienteId",
+                        name: "FK_Reservas_Cliente_ClienteId",
                         column: x => x.ClienteId,
-                        principalTable: "Clientes",
+                        principalTable: "Cliente",
                         principalColumn: "ClienteId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -319,10 +318,10 @@ namespace CarRental.Migrations
                         principalTable: "Seguros",
                         principalColumn: "SeguroId");
                     table.ForeignKey(
-                        name: "FK_Reservas_Vehiculos_VehiculoId",
+                        name: "FK_Reservas_Vehiculo_VehiculoId",
                         column: x => x.VehiculoId,
-                        principalTable: "Vehiculos",
-                        principalColumn: "VehiculosId",
+                        principalTable: "Vehiculo",
+                        principalColumn: "VehiculoId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -417,13 +416,13 @@ namespace CarRental.Migrations
                 column: "VehiculoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vehiculos_CombustibleId",
-                table: "Vehiculos",
+                name: "IX_Vehiculo_CombustibleId",
+                table: "Vehiculo",
                 column: "CombustibleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vehiculos_SeguroId",
-                table: "Vehiculos",
+                name: "IX_Vehiculo_SeguroId",
+                table: "Vehiculo",
                 column: "SeguroId");
         }
 
@@ -446,7 +445,7 @@ namespace CarRental.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Categorias");
+                name: "Categoria");
 
             migrationBuilder.DropTable(
                 name: "MantenimientoVehiculo");
@@ -464,10 +463,10 @@ namespace CarRental.Migrations
                 name: "Reservas");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Cliente");
 
             migrationBuilder.DropTable(
-                name: "Vehiculos");
+                name: "Vehiculo");
 
             migrationBuilder.DropTable(
                 name: "Combustible");
