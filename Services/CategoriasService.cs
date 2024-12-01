@@ -16,7 +16,7 @@ namespace CarRental.Services
         public async Task<List<Categorias>> ObtenerCategorias()
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
-            return await contexto.Categorias
+            return await contexto.Categoria
                 .AsNoTracking() 
                 .ToListAsync();
         }
@@ -24,7 +24,7 @@ namespace CarRental.Services
         public async Task<Categorias?> ObtenerCategoriaPorId(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
-            return await contexto.Categorias
+            return await contexto.Categoria
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CategoriaId == id);
         }
@@ -32,7 +32,7 @@ namespace CarRental.Services
         public async Task<bool> CrearCategoria(Categorias categoria)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
-            contexto.Categorias.Add(categoria);
+            contexto.Categoria.Add(categoria);
             await contexto.SaveChangesAsync();
             return true;
         }
@@ -40,7 +40,7 @@ namespace CarRental.Services
         public async Task<bool> ActualizarCategoria(Categorias categoria)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
-            contexto.Categorias.Update(categoria);
+            contexto.Categoria.Update(categoria);
             await contexto.SaveChangesAsync();
             return true;
         }
@@ -48,10 +48,10 @@ namespace CarRental.Services
         public async Task<bool> EliminarCategoria(int id)
         {
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
-            var categoria = await contexto.Categorias.FindAsync(id);
+            var categoria = await contexto.Categoria.FindAsync(id);
             if (categoria != null)
             {
-                contexto.Categorias.Remove(categoria);
+                contexto.Categoria.Remove(categoria);
                 await contexto.SaveChangesAsync();
                 return true;
             }
