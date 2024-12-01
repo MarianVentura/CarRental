@@ -38,8 +38,8 @@ namespace CarRental.Services
             await using var contexto = await _dbContextFactory.CreateDbContextAsync();
 
             // Verifica que el vehículo esté disponible
-            var vehiculoDisponible = await contexto.Vehiculos
-                .AnyAsync(v => v.VehiculosId == reserva.VehiculoId && v.Disponible);
+            var vehiculoDisponible = await contexto.Vehiculo
+                .AnyAsync(v => v.VehiculoId == reserva.VehiculoId && v.Disponible);
             if (!vehiculoDisponible)
             {
                 return false; // El vehículo no está disponible
