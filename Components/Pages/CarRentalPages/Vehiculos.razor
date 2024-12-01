@@ -1,51 +1,57 @@
 ﻿@* @page "/vehiculos"
 @inject VehiculosService VehiculosService
+@inject NavigationManager NavigationManager
+@using CarRental.Models
+@using CarRental.Data
 
 <h3>Catálogo de Vehículos</h3>
 
-<div class="vehiculos-catalogo">
-    @if (vehiculos == null)
-    {
-        <p>Cargando vehículos...</p>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var vehiculo in vehiculos)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="@vehiculo.ImagenURL" class="card-img-top" alt="Imagen de @vehiculo.Nombre" />
-                        <div class="card-body">
-                            <h5 class="card-title">@vehiculo.Nombre (@vehiculo.Modelo, @vehiculo.Categoria)</h5>
-                            <p class="card-text">
-                                <strong>Marca:</strong> @vehiculo.Marca <br />
-                                <strong>Año:</strong> @vehiculo.Modelo <br />
-                                <strong>Precio por día:</strong> @String.Format("{0:C}", vehiculo.PrecioPorDia) <br />
-                                <strong>Historial de Mantenimiento:</strong> @vehiculo.HistorialMantenimiento
-                            </p>
-                            <a href="#" class="btn btn-primary" @onclick="() => VerDetalles(vehiculo.VehiculosId)">Ver detalles</a>
-                        </div>
+@if (vehiculos == null)
+{
+    <p>Cargando vehículos...</p>
+}
+else if (!vehiculos.Any())
+{
+    <p>No se encontraron vehículos disponibles.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var vehiculo in vehiculos)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@vehiculo.ImagenURL" class="card-img-top" alt="Imagen de @vehiculo.Marca @vehiculo.Modelo" />
+                    <div class="card-body">
+                        <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo (@vehiculo.Año)</h5>
+                        <p class="card-text">
+                            <strong>Categoría:</strong> @vehiculo.Categoria <br />
+                            <strong>Precio por día:</strong> @String.Format("{0:C}", vehiculo.PrecioPorDia) <br />
+                            <strong>Transmisión:</strong> @vehiculo.Transmision <br />
+                            <strong>Puertas:</strong> @vehiculo.Puertas <br />
+                            <strong>Asientos:</strong> @vehiculo.Asientos <br />
+                            <strong>Color:</strong> @vehiculo.Color <br />
+                            <strong>Placa:</strong> @vehiculo.NumeroPlaca <br />
+                            <strong>Disponible:</strong> @(vehiculo.Disponible ? "Sí" : "No")
+                        </p>
+                        <button class="btn btn-primary" @onclick="() => VerDetalles(vehiculo.VehiculoId)">Ver detalles</button>
                     </div>
                 </div>
-            }
-        </div>
-    }
-</div>
+            </div>
+        }
+    </div>
+}
 
 @code {
-    private List<Vehiculos> vehiculos;
+    private List<Vehiculos> vehiculos = new();
 
-    // Cargar la lista de vehículos cuando se inicializa el componente
     protected override async Task OnInitializedAsync()
     {
-        vehiculos = await VehiculosService.ObtenerVehiculosAsync();
+        vehiculos = await VehiculosService.ObtenerVehiculos();
     }
 
-    // Método para manejar la acción de "Ver detalles"
     private void VerDetalles(int vehiculoId)
     {
-        // Aquí podrías navegar a una página de detalles o mostrar más información en el mismo componente
         NavigationManager.NavigateTo($"/vehiculos/{vehiculoId}");
     }
 }
