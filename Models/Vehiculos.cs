@@ -6,10 +6,7 @@ namespace CarRental.Models;
 public class Vehiculos
 {
     [Key]
-    public int VehiculosId { get; set; }
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public string? Nombre { get; set; }
+    public int VehiculoId { get; set; }
 
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     public string? Marca { get; set; }
@@ -18,14 +15,18 @@ public class Vehiculos
     public string? Modelo { get; set; }
 
     [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public decimal PrecioPorDia { get; set; }
+    public int Año { get; set; }
 
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     public string? Categoria { get; set; }
 
+    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    public decimal PrecioPorDia { get; set; }
+
     public bool Disponible { get; set; } = true;
 
-    public string ImagenURL { get; set; }
+    [Required(ErrorMessage = "URL de Imagen es obligatorio.")]
+    public required string ImagenURL { get; set; }
 
     public string? HistorialMantenimiento { get; set; }
 
@@ -43,9 +44,6 @@ public class Vehiculos
     [ForeignKey("SeguroId")]
     public Seguros? Seguro { get; set; }
 
-    // Nuevos campos adicionales
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public int Año { get; set; } // Año de fabricación
 
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     public string? Transmision { get; set; } // Manual o Automática
