@@ -19,7 +19,7 @@ public class Clientes
 
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     public string? Direccion { get; set; }
-    public string? Identificacion { get; set; } // Ejemplo: "Cédula" o "Pasaporte"
+    public string? Identificacion { get; set; } 
 
     
 }
