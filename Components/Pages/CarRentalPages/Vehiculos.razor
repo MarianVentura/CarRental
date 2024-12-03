@@ -1,4 +1,4 @@
-﻿@page "/vehiculos"
+﻿@* @page "/vehiculos"
 @inject VehiculosService VehiculosService
 
 <PageTitle>Catalogo de Vehículos</PageTitle>
@@ -38,3 +38,4 @@ else
         vehiculos = await VehiculosService.ObtenerVehiculos();
     }
 }
+ *@
