@@ -1,7 +1,86 @@
-﻿@page "/Index/Cliente"
+﻿@page "/Index/Clientes"
+@using Microsoft.AspNetCore.Authorization
+@using CarRental.Services
+@using CarRental.Models
+@inject VehiculosService VehiculosService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Hola Cliente..............</h3>
+<PageTitle>Inicio de Cliente</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Bienvenido, @NombreCliente</h1>
+        <p>¡Explora nuestros vehículos y realiza tus reservas fácilmente!</p>
+
+        <h2>Vehículos Disponibles</h2>
+        @if (vehiculosDisponibles is null)
+        {
+            <p>Cargando vehículos...</p>
+        }
+        else if (!vehiculosDisponibles.Any())
+        {
+            <p>No hay vehículos disponibles en este momento. Por favor, vuelve más tarde.</p>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var vehiculo in vehiculosDisponibles)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="@vehiculo.ImagenURL" class="card-img-top" alt="@vehiculo.Marca @vehiculo.Modelo" />
+                            <div class="card-body">
+                                <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo</h5>
+                                <p class="card-text">
+                                    Año: @vehiculo.Año <br />
+                                    Transmisión: @vehiculo.Transmision <br />
+                                    Precio por día: @vehiculo.PrecioPorDia:C
+                                </p>
+                                <button class="btn btn-primary" @onclick="() => ReservarVehiculo(vehiculo.VehiculoId)">Reservar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1>Acceso Denegado</h1>
+        <p>Debes iniciar sesión para acceder a esta página.</p>
+        <button class="btn btn-primary" @onclick="RedirigirALogin">Iniciar Sesión</button>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
+    private List<Vehiculos>? vehiculosDisponibles;
+    private string NombreCliente = string.Empty;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            NombreCliente = user.Identity.Name ?? "Cliente";
+            await CargarVehiculosDisponibles();
+        }
+    }
+
+    private async Task CargarVehiculosDisponibles()
+    {
+        vehiculosDisponibles = await VehiculosService.ObtenerVehiculos();
+        vehiculosDisponibles = vehiculosDisponibles.Where(v => v.Disponible).ToList();
+    }
+
+    private void RedirigirALogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private void ReservarVehiculo(int vehiculoId)
+    {
+        NavigationManager.NavigateTo($"/reservar/{vehiculoId}");
+    }
 }
