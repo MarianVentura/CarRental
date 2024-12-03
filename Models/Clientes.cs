@@ -3,7 +3,6 @@
 namespace CarRental.Models;
 
 
-
 public class Cliente
 {
     [Key]
@@ -27,8 +26,20 @@ public class Cliente
     [StringLength(200, ErrorMessage = "La dirección no puede exceder los 200 caracteres.")]
     public string Direccion { get; set; }
 
+    [Required(ErrorMessage = "El tipo de identificación es obligatorio.")]
+    public TipoIdentificacion Identificacion { get; set; }
+
     [Required(ErrorMessage = "La identificación es obligatoria.")]
     [RegularExpression(@"^[0-9a-zA-Z-]+$", ErrorMessage = "La identificación solo puede contener letras, números y guiones.")]
     [StringLength(20, ErrorMessage = "La identificación no puede exceder los 20 caracteres.")]
-    public string Identificacion { get; set; }
+    public string NumeroIdentificacion { get; set; }
+
+    // Enum para el tipo de identificación
+    public enum TipoIdentificacion
+    {
+        Cedula,
+        Pasaporte
+    }
 }
+
+

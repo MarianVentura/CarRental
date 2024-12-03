@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CarRental.Models;
 
 
-
 public class MantenimientoVehiculo
 {
     [Key]

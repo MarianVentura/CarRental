@@ -3,33 +3,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarRental.Models;
 
-
 public class Reserva
 {
     [Key]
     public int ReservaId { get; set; }
 
-    [Required(ErrorMessage = "El cliente es obligatorio.")]
+    [Required]
     [ForeignKey("Cliente")]
     public int ClienteId { get; set; }
+    public Cliente Cliente { get; set; }
 
-    [Required(ErrorMessage = "El vehículo es obligatorio.")]
+    [Required]
     [ForeignKey("Vehiculo")]
     public int VehiculoId { get; set; }
+    public Vehiculo Vehiculo { get; set; }
 
     [Required(ErrorMessage = "La fecha de recogida es obligatoria.")]
-    [DataType(DataType.Date)]
     public DateTime FechaRecogida { get; set; }
 
     [Required(ErrorMessage = "La fecha de devolución es obligatoria.")]
-    [DataType(DataType.Date)]
     public DateTime FechaDevolucion { get; set; }
 
-    [Required(ErrorMessage = "El precio total es obligatorio.")]
-    [Range(0, double.MaxValue, ErrorMessage = "El precio total debe ser un valor positivo.")]
+    [Required(ErrorMessage = "El estado de la reserva es obligatorio.")]
+    public EstadoReserva Estado { get; set; }
+
+    [Range(1, double.MaxValue, ErrorMessage = "El total debe ser mayor a 0.")]
     public decimal TotalPrecio { get; set; }
 
-    [Required(ErrorMessage = "El estado es obligatorio.")]
-    [RegularExpression(@"^(Confirmada|Cancelada|Pendiente)$", ErrorMessage = "El estado debe ser Confirmada, Cancelada o Pendiente.")]
-    public string Estado { get; set; }
+    // Enum para el estado de la reserva
+    public enum EstadoReserva
+    {
+        Confirmada,
+        Cancelada,
+        Pendiente
+    }
 }
