@@ -1,0 +1,182 @@
+﻿@page "/vehiculos/edit/{VehiculoId}"
+@inject VehiculosService VehiculosService
+@inject NavigationManager NavigationManager
+@inject ToastService ToastService
+
+[Parameter] public int VehiculoId { get; set; }
+
+<h3 class="text-center mb-4" style="color: #3f88c5;">Editar Vehículo</h3>
+
+<EditForm Model="vehiculo" OnValidSubmit="ActualizarVehiculo">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="marca" class="form-label">Marca:</label>
+                <InputText id="marca" class="form-control" @bind-Value="vehiculo.Marca" />
+                <ValidationMessage For="@(() => vehiculo.Marca)" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="modelo" class="form-label">Modelo:</label>
+                <InputText id="modelo" class="form-control" @bind-Value="vehiculo.Modelo" />
+                <ValidationMessage For="@(() => vehiculo.Modelo)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="anio" class="form-label">Año:</label>
+                <InputNumber id="anio" class="form-control" @bind-Value="vehiculo.Año" />
+                <ValidationMessage For="@(() => vehiculo.Año)" />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="categoria" class="form-label">Categoría:</label>
+                <InputText id="categoria" class="form-control" @bind-Value="vehiculo.Categoria" />
+                <ValidationMessage For="@(() => vehiculo.Categoria)" />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="precioPorDia" class="form-label">Precio por Día:</label>
+                <InputNumber id="precioPorDia" class="form-control" @bind-Value="vehiculo.PrecioPorDia" />
+                <ValidationMessage For="@(() => vehiculo.PrecioPorDia)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="imagenUrl" class="form-label">URL de Imagen:</label>
+        <InputText id="imagenUrl" class="form-control" @bind-Value="vehiculo.ImagenURL" />
+        <ValidationMessage For="@(() => vehiculo.ImagenURL)" />
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="combustibleId" class="form-label">Combustible:</label>
+                <InputNumber id="combustibleId" class="form-control" @bind-Value="vehiculo.CombustibleId" />
+                <ValidationMessage For="@(() => vehiculo.CombustibleId)" />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="seguroId" class="form-label">Seguro:</label>
+                <InputNumber id="seguroId" class="form-control" @bind-Value="vehiculo.SeguroId" />
+                <ValidationMessage For="@(() => vehiculo.SeguroId)" />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="transmision" class="form-label">Transmisión:</label>
+                <InputText id="transmision" class="form-control" @bind-Value="vehiculo.Transmision" />
+                <ValidationMessage For="@(() => vehiculo.Transmision)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="puertas" class="form-label">Puertas:</label>
+                <InputNumber id="puertas" class="form-control" @bind-Value="vehiculo.Puertas" />
+                <ValidationMessage For="@(() => vehiculo.Puertas)" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="asientos" class="form-label">Asientos:</label>
+                <InputNumber id="asientos" class="form-control" @bind-Value="vehiculo.Asientos" />
+                <ValidationMessage For="@(() => vehiculo.Asientos)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="color" class="form-label">Color:</label>
+        <InputText id="color" class="form-control" @bind-Value="vehiculo.Color" />
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="numeroPlaca" class="form-label">Número de Placa:</label>
+        <InputText id="numeroPlaca" class="form-control" @bind-Value="vehiculo.NumeroPlaca" />
+        <ValidationMessage For="@(() => vehiculo.NumeroPlaca)" />
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="kilometraje" class="form-label">Kilometraje:</label>
+        <InputNumber id="kilometraje" class="form-control" @bind-Value="vehiculo.Kilometraje" />
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="observaciones" class="form-label">Observaciones:</label>
+        <InputTextArea id="observaciones" class="form-control" @bind-Value="vehiculo.Observaciones" />
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn" style="background-color: #3f88c5; color: white;">Actualizar</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="Cancelar">Cancelar</button>
+    </div>
+</EditForm>
+
+@code {
+
+
+    private Vehiculos vehiculo = new Vehiculos()
+        {
+            ImagenURL = string.Empty 
+        };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            vehiculo = await VehiculosService.ObtenerVehiculoPorId(VehiculoId);
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar los datos del vehículo: {ex.Message}");
+            NavigationManager.NavigateTo("/vehiculos");
+        }
+    }
+
+    private async Task ActualizarVehiculo()
+    {
+        try
+        {
+            var exito = await VehiculosService.ActualizarVehiculo(vehiculo);
+            if (exito)
+            {
+                ToastService.ShowSuccess("Vehículo actualizado exitosamente.");
+                NavigationManager.NavigateTo("/vehiculos");
+            }
+            else
+            {
+                ToastService.ShowError("Error al actualizar el vehículo.");
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error inesperado: {ex.Message}");
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/vehiculos");
+    }
+}
