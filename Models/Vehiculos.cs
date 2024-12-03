@@ -1,65 +1,45 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarRental.Models;
 
-public class Vehiculos
+
+public class Vehiculo
 {
     [Key]
     public int VehiculoId { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public string? Marca { get; set; }
+    [Required(ErrorMessage = "La marca es obligatoria.")]
+    [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "La marca solo puede contener letras y espacios.")]
+    public string Marca { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public string? Modelo { get; set; }
+    [Required(ErrorMessage = "El modelo es obligatorio.")]
+    [RegularExpression(@"^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El modelo solo puede contener letras, números y espacios.")]
+    public string Modelo { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    [Required(ErrorMessage = "El año es obligatorio.")]
+    [Range(1900, 2100, ErrorMessage = "El año debe estar entre 1900 y 2100.")]
     public int Año { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public string? Categoria { get; set; }
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    [Required(ErrorMessage = "El precio por día es obligatorio.")]
+    [Range(0, double.MaxValue, ErrorMessage = "El precio debe ser un valor positivo.")]
     public decimal PrecioPorDia { get; set; }
 
-    public bool Disponible { get; set; } = true;
+    [Required(ErrorMessage = "El estado de disponibilidad es obligatorio.")]
+    public bool Disponible { get; set; }
 
-    [Required(ErrorMessage = "URL de Imagen es obligatorio.")]
-    public required string ImagenURL { get; set; }
+    [Required(ErrorMessage = "La imagen es obligatoria.")]
+    [Url(ErrorMessage = "Debe ser una URL válida.")]
+    public string Imagen { get; set; }
 
-    public string? HistorialMantenimiento { get; set; }
+    [Required(ErrorMessage = "El tipo de combustible es obligatorio.")]
+    [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El tipo de combustible solo puede contener letras y espacios.")]
+    public string Combustible { get; set; }
 
-    // Relación con Combustible
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public int CombustibleId { get; set; }
+    [Required(ErrorMessage = "El tipo de transmisión es obligatorio.")]
+    [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El tipo de transmisión solo puede contener letras y espacios.")]
+    public string TipoTransmision { get; set; }
 
-    [ForeignKey("CombustibleId")]
-    public Combustible? Combustible { get; set; }
-
-    // Relación con Seguros
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public int SeguroId { get; set; }
-
-    [ForeignKey("SeguroId")]
-    public Seguros? Seguro { get; set; }
-
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public string? Transmision { get; set; } // Manual o Automática
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public int Puertas { get; set; } // Cantidad de puertas
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public int Asientos { get; set; } // Cantidad de asientos
-
-    public string? Color { get; set; } // Color del vehículo
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public string? NumeroPlaca { get; set; } // Número de placa o matrícula
-
-    public decimal Kilometraje { get; set; } // Kilometraje actual
-
-    public string? Observaciones { get; set; } // Notas adicionales sobre el vehículo
+    [Required(ErrorMessage = "El color es obligatorio.")]
+    [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El color solo puede contener letras y espacios.")]
+    public string Color { get; set; }
 }
