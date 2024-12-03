@@ -1,0 +1,75 @@
+﻿@page "/Details/vehiculos/{VehiculoId:int}"
+@using CarRental.Services
+@using CarRental.Models
+@inject VehiculosService VehiculosService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Detalles del Vehículo</PageTitle>
+
+@if (vehiculo is null)
+{
+    <p>Cargando detalles del vehículo...</p>
+}
+else
+{
+    <div class="card">
+        <img src="@vehiculo.ImagenURL" class="card-img-top" alt="@vehiculo.Marca @vehiculo.Modelo" />
+        <div class="card-body">
+            <h1 class="card-title">@vehiculo.Marca @vehiculo.Modelo (@vehiculo.Año)</h1>
+            <p class="card-text">
+                <strong>Categoría:</strong> @vehiculo.Categoria <br />
+                <strong>Precio por día:</strong> @vehiculo.PrecioPorDia:C <br />
+                <strong>Transmisión:</strong> @vehiculo.Transmision <br />
+                <strong>Puertas:</strong> @vehiculo.Puertas <br />
+                <strong>Asientos:</strong> @vehiculo.Asientos <br />
+                <strong>Color:</strong> @vehiculo.Color ?? "No especificado" <br />
+                <strong>Placa:</strong> @vehiculo.NumeroPlaca <br />
+                <strong>Kilometraje:</strong> @vehiculo.Kilometraje:N0 km <br />
+                <strong>Combustible:</strong> @vehiculo.Combustible?.Tipo ?? "No especificado" <br />
+                <strong>Seguro:</strong> @vehiculo.Seguro?.Nombre ?? "No especificado" <br />
+                <strong>Disponibilidad:</strong> @(vehiculo.Disponible ? "Disponible" : "No disponible") <br />
+            </p>
+            <p class="card-text">
+                <strong>Historial de Mantenimiento:</strong><br />
+                @vehiculo.HistorialMantenimiento ?? "No hay información disponible."
+            </p>
+            <p class="card-text">
+                <strong>Observaciones:</strong><br />
+                @vehiculo.Observaciones ?? "No hay observaciones adicionales."
+            </p>
+            @if (vehiculo.Disponible)
+            {
+                <button class="btn btn-primary" @onclick="ReservarVehiculo">Reservar</button>
+            }
+            else
+            {
+                <div class="alert alert-warning mt-3" role="alert">
+                    Este vehículo no está disponible actualmente.
+                </div>
+            }
+        </div>
+    </div>
+    <button class="btn btn-secondary mt-3" @onclick="Regresar">Volver</button>
+}
+
+@code {
+    [Parameter]
+    public int VehiculoId { get; set; }
+
+    private Vehiculos? vehiculo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        vehiculo = await VehiculosService.ObtenerVehiculoPorId(VehiculoId);
+    }
+
+    private void ReservarVehiculo()
+    {
+        NavigationManager.NavigateTo($"/reservar/{VehiculoId}");
+    }
+
+    private void Regresar()
+    {
+        NavigationManager.NavigateTo("/clientes");
+    }
+}
