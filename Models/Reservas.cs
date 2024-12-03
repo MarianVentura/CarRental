@@ -1,50 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarRental.Models;
 
-public class Reservas
+
+public class Reserva
 {
     [Key]
     public int ReservaId { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    [Required(ErrorMessage = "El cliente es obligatorio.")]
+    [ForeignKey("Cliente")]
     public int ClienteId { get; set; }
 
-    public Clientes? Cliente { get; set; }
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    [Required(ErrorMessage = "El vehículo es obligatorio.")]
+    [ForeignKey("Vehiculo")]
     public int VehiculoId { get; set; }
 
-    public Vehiculos? Vehiculo { get; set; }
-
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    [Required(ErrorMessage = "La fecha de recogida es obligatoria.")]
+    [DataType(DataType.Date)]
     public DateTime FechaRecogida { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    [Required(ErrorMessage = "La fecha de devolución es obligatoria.")]
+    [DataType(DataType.Date)]
     public DateTime FechaDevolucion { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
+    [Required(ErrorMessage = "El precio total es obligatorio.")]
+    [Range(0, double.MaxValue, ErrorMessage = "El precio total debe ser un valor positivo.")]
     public decimal TotalPrecio { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio.")]
-    public string? Estado { get; set; }
-
-    public string? LugarRecogida { get; set; }
-    public string? LugarEntrega { get; set; }
-    public string? Comentarios { get; set; }
-
-    // Nuevo campo: Nivel de combustible al recoger
-    public string? NivelCombustibleRecogida { get; set; }
-
-    // Nuevo campo: Nivel de combustible al devolver
-    public string? NivelCombustibleDevolucion { get; set; }
-
-    // Nuevo campo: Seguro asociado a la reserva
-    public int? SeguroId { get; set; }
-
-    [ForeignKey("SeguroId")]
-    public Seguros? Seguro { get; set; }
-
-    public virtual MetodoPago? MetodoPago { get; set; }
+    [Required(ErrorMessage = "El estado es obligatorio.")]
+    [RegularExpression(@"^(Confirmada|Cancelada|Pendiente)$", ErrorMessage = "El estado debe ser Confirmada, Cancelada o Pendiente.")]
+    public string Estado { get; set; }
 }
