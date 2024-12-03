@@ -1,40 +1,28 @@
 ﻿@* @page "/vehiculos"
 @inject VehiculosService VehiculosService
-@inject NavigationManager NavigationManager
-@using CarRental.Models
-@using CarRental.Data
 
-<h3>Catálogo de Vehículos</h3>
+<PageTitle>Catalogo de Vehículos</PageTitle>
+
+<h3>Catalogo de Vehículos</h3>
 
 @if (vehiculos == null)
 {
-    <p>Cargando vehículos...</p>
-}
-else if (!vehiculos.Any())
-{
-    <p>No se encontraron vehículos disponibles.</p>
+    <p><em>Cargando...</em></p>
 }
 else
 {
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row">
         @foreach (var vehiculo in vehiculos)
         {
-            <div class="col">
-                <div class="card h-100">
-                    <img src="@vehiculo.ImagenURL" class="card-img-top" alt="Imagen de @vehiculo.Marca @vehiculo.Modelo" />
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card">
+                    <img src="@vehiculo.ImagenURL" class="card-img-top" alt="Imagen del vehículo" />
                     <div class="card-body">
-                        <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo (@vehiculo.Año)</h5>
-                        <p class="card-text">
-                            <strong>Categoría:</strong> @vehiculo.Categoria <br />
-                            <strong>Precio por día:</strong> @String.Format("{0:C}", vehiculo.PrecioPorDia) <br />
-                            <strong>Transmisión:</strong> @vehiculo.Transmision <br />
-                            <strong>Puertas:</strong> @vehiculo.Puertas <br />
-                            <strong>Asientos:</strong> @vehiculo.Asientos <br />
-                            <strong>Color:</strong> @vehiculo.Color <br />
-                            <strong>Placa:</strong> @vehiculo.NumeroPlaca <br />
-                            <strong>Disponible:</strong> @(vehiculo.Disponible ? "Sí" : "No")
-                        </p>
-                        <button class="btn btn-primary" @onclick="() => VerDetalles(vehiculo.VehiculoId)">Ver detalles</button>
+                        <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo</h5>
+                        <p class="card-text">Año: @vehiculo.Año</p>
+                        <p class="card-text">Precio por día: @vehiculo.PrecioPorDia.ToString("C")</p>
+                        <p class="card-text">Categoría: @vehiculo.Categoria</p>
+                        <a href="#" class="btn btn-primary">Ver detalles</a>
                     </div>
                 </div>
             </div>
@@ -43,16 +31,11 @@ else
 }
 
 @code {
-    private List<Vehiculos> vehiculos = new();
+    private List<Vehiculos> vehiculos { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         vehiculos = await VehiculosService.ObtenerVehiculos();
-    }
-
-    private void VerDetalles(int vehiculoId)
-    {
-        NavigationManager.NavigateTo($"/vehiculos/{vehiculoId}");
     }
 }
  *@

@@ -1,3 +1,4 @@
+using Blazored.Toast;
 using CarRental.Components;
 using CarRental.Components.Account;
 using CarRental.Data;
@@ -46,6 +47,10 @@ builder.Services.AddScoped<ReservasService>();
 builder.Services.AddScoped<VehiculosService>();
 builder.Services.AddScoped<CombustibleService>();
 builder.Services.AddScoped<SegurosService>();
+
+builder.Services.AddBlazorBootstrap();
+builder.Services.AddBlazoredToast();
+
 
 var app = builder.Build();
 
