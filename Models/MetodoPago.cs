@@ -11,7 +11,7 @@ public class MetodoPago
     public int MetodoPagoId { get; set; }
 
     [Required(ErrorMessage = "El tipo de pago es obligatorio.")]
-    [RegularExpression(@"^(Tarjeta de crédito|Transferencia Bancaria|Pago en Línea)$", ErrorMessage = "El tipo debe ser Tarjeta de crédito, Transferencia Bancaria o Pago en Línea.")]
+    [RegularExpression(@"^(Tarjeta de crédito|Transferencia Bancaria)$", ErrorMessage = "El tipo debe ser Tarjeta de crédito o Transferencia Bancaria.")]
     public string Tipo { get; set; }
 
     [Required(ErrorMessage = "La fecha de transacción es obligatoria.")]
@@ -30,7 +30,4 @@ public class MetodoPago
     [RegularExpression(@"^(Aprobada|Rechazada|Pendiente)$", ErrorMessage = "El estado debe ser Aprobada, Rechazada o Pendiente.")]
     public string EstadoTransaccion { get; set; }
 
-    [Required(ErrorMessage = "El proveedor del pago es obligatorio.")]
-    [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El proveedor solo puede contener letras y espacios.")]
-    public string ProveedorPago { get; set; }
 }
