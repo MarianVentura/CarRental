@@ -1,13 +1,14 @@
-﻿@* @page "/vehiculos"
+﻿@page "/vehiculos"
 @using CarRental.Models
 @using CarRental.Services
 @inject VehiculosService VehiculosService
+@inject IJSRuntime jsRuntime
 
 <PageTitle>Gestión de Vehículos</PageTitle>
 
 <h1>Gestión de Vehículos</h1>
 
-@if (vehiculos is null)
+@if (vehiculos == null)
 {
     <p>Cargando vehículos...</p>
 }
@@ -17,7 +18,7 @@ else
         <button class="btn btn-primary" @onclick="MostrarFormularioCrear">Agregar Nuevo Vehículo</button>
     </div>
 
-    @if (vehiculos.Count == 0)
+    @if (!vehiculos.Any())
     {
         <p>No hay vehículos registrados.</p>
     }
@@ -31,9 +32,10 @@ else
                     <th>Modelo</th>
                     <th>Año</th>
                     <th>Transmisión</th>
+                    <th>Combustible</th>
                     <th>Precio por Día</th>
                     <th>Disponible</th>
-                    <th>Categoría</th>
+                    <th>Color</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -46,9 +48,10 @@ else
                         <td>@vehiculo.Modelo</td>
                         <td>@vehiculo.Año</td>
                         <td>@vehiculo.Transmision</td>
+                        <td>@vehiculo.Combustible</td>
                         <td>@vehiculo.PrecioPorDia:C</td>
                         <td>@(vehiculo.Disponible ? "Sí" : "No")</td>
-                        <td>@vehiculo.Categoria</td>
+                        <td>@vehiculo.Color</td>
                         <td>
                             <button class="btn btn-warning btn-sm" @onclick="() => EditarVehiculo(vehiculo)">Editar</button>
                             <button class="btn btn-danger btn-sm" @onclick="() => EliminarVehiculo(vehiculo.VehiculoId)">Eliminar</button>
@@ -63,7 +66,7 @@ else
 @if (mostrarFormulario)
 {
     <div class="mt-4">
-        <h3>@((vehiculoSeleccionado is null ? "Crear" : "Editar")) Vehículo</h3>
+        <h3>@((vehiculoSeleccionado == null ? "Crear" : "Editar")) Vehículo</h3>
         <EditForm Model="@vehiculoSeleccionado" OnValidSubmit="GuardarVehiculo">
             <DataAnnotationsValidator />
             <ValidationSummary />
@@ -81,11 +84,21 @@ else
             </div>
             <div class="mb-3">
                 <label>Transmisión:</label>
-                <InputText @bind-Value="vehiculoSeleccionado.Transmision" class="form-control" />
+                <InputSelect @bind-Value="vehiculoSeleccionado.Transmision" class="form-control">
+                    @foreach (TipoTransmision transmision in Enum.GetValues(typeof(TipoTransmision)))
+                    {
+                        <option value="@transmision">@transmision</option>
+                    }
+                </InputSelect>
             </div>
             <div class="mb-3">
-                <label>Categoría:</label>
-                <InputText @bind-Value="vehiculoSeleccionado.Categoria" class="form-control" />
+                <label>Combustible:</label>
+                <InputSelect @bind-Value="vehiculoSeleccionado.Combustible" class="form-control">
+                    @foreach (TipoCombustible combustible in Enum.GetValues(typeof(TipoCombustible)))
+                    {
+                        <option value="@combustible">@combustible</option>
+                    }
+                </InputSelect>
             </div>
             <div class="mb-3">
                 <label>Precio por Día:</label>
@@ -96,16 +109,12 @@ else
                 <InputCheckbox @bind-Value="vehiculoSeleccionado.Disponible" class="form-check-input" />
             </div>
             <div class="mb-3">
-                <label>Número de Placa:</label>
-                <InputText @bind-Value="vehiculoSeleccionado.NumeroPlaca" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Kilometraje:</label>
-                <InputNumber @bind-Value="vehiculoSeleccionado.Kilometraje" class="form-control" />
-            </div>
-            <div class="mb-3">
                 <label>Color:</label>
                 <InputText @bind-Value="vehiculoSeleccionado.Color" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>Imagen URL:</label>
+                <InputText @bind-Value="vehiculoSeleccionado.Imagen" class="form-control" />
             </div>
             <button type="submit" class="btn btn-success">Guardar</button>
             <button type="button" class="btn btn-secondary" @onclick="CancelarFormulario">Cancelar</button>
@@ -114,8 +123,8 @@ else
 }
 
 @code {
-    private List<Vehiculos>? vehiculos;
-    private Vehiculos? vehiculoSeleccionado;
+    private List<Vehiculo>? vehiculos;
+    private Vehiculo? vehiculoSeleccionado;
     private bool mostrarFormulario = false;
 
     protected override async Task OnInitializedAsync()
@@ -125,16 +134,16 @@ else
 
     private async Task CargarVehiculos()
     {
-        vehiculos = await VehiculosService.ObtenerVehiculos();
+        vehiculos = await VehiculosService.ListaVehiculos();
     }
 
     private void MostrarFormularioCrear()
     {
-        vehiculoSeleccionado = new Vehiculos();
+        vehiculoSeleccionado = new Vehiculo();
         mostrarFormulario = true;
     }
 
-    private void EditarVehiculo(Vehiculos vehiculo)
+    private void EditarVehiculo(Vehiculo vehiculo)
     {
         vehiculoSeleccionado = vehiculo;
         mostrarFormulario = true;
@@ -144,26 +153,33 @@ else
     {
         if (vehiculoSeleccionado is null) return;
 
+        bool exito;
         if (vehiculoSeleccionado.VehiculoId == 0)
         {
-            await VehiculosService.CrearVehiculo(vehiculoSeleccionado);
+            exito = await VehiculosService.AgregarVehiculo(vehiculoSeleccionado);
         }
         else
         {
-            await VehiculosService.ActualizarVehiculo(vehiculoSeleccionado);
+            exito = await VehiculosService.ActualizarVehiculo(vehiculoSeleccionado);
         }
 
-        mostrarFormulario = false;
-        await CargarVehiculos();
+        if (exito)
+        {
+            mostrarFormulario = false;
+            await CargarVehiculos();
+        }
     }
 
     private async Task EliminarVehiculo(int id)
     {
-        var confirm = await jsRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el vehículo con ID {id}?");
+        bool confirm = await jsRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el vehículo con ID {id}?");
         if (confirm)
         {
-            await VehiculosService.EliminarVehiculo(id);
-            await CargarVehiculos();
+            bool exito = await VehiculosService.EliminarVehiculo(id);
+            if (exito)
+            {
+                await CargarVehiculos();
+            }
         }
     }
 
@@ -173,4 +189,3 @@ else
         mostrarFormulario = false;
     }
 }
- *@
