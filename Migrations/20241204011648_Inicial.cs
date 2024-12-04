@@ -51,68 +51,42 @@ namespace CarRental.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categoria",
-                columns: table => new
-                {
-                    CategoriaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImagenURL = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categoria", x => x.CategoriaId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cliente",
+                name: "Clientes",
                 columns: table => new
                 {
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombres = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Identificacion = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Direccion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Identificacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumeroIdentificacion = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cliente", x => x.ClienteId);
+                    table.PrimaryKey("PK_Clientes", x => x.ClienteId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Combustible",
+                name: "Vehiculos",
                 columns: table => new
                 {
-                    CombustibleId = table.Column<int>(type: "int", nullable: false)
+                    VehiculoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Politica = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CostoPorLitro = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Marca = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Modelo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Año = table.Column<int>(type: "int", nullable: false),
+                    PrecioPorDia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Disponible = table.Column<bool>(type: "bit", nullable: false),
+                    Imagen = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Combustible = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Transmision = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Combustible", x => x.CombustibleId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Seguros",
-                columns: table => new
-                {
-                    SeguroId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Costo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Cobertura = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Proveedor = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Seguros", x => x.SeguroId);
+                    table.PrimaryKey("PK_Vehiculos", x => x.VehiculoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,64 +196,23 @@ namespace CarRental.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vehiculo",
-                columns: table => new
-                {
-                    VehiculoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Marca = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Modelo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Año = table.Column<int>(type: "int", nullable: false),
-                    Categoria = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrecioPorDia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Disponible = table.Column<bool>(type: "bit", nullable: false),
-                    ImagenURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HistorialMantenimiento = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CombustibleId = table.Column<int>(type: "int", nullable: false),
-                    SeguroId = table.Column<int>(type: "int", nullable: false),
-                    Transmision = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Puertas = table.Column<int>(type: "int", nullable: false),
-                    Asientos = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NumeroPlaca = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Kilometraje = table.Column<decimal>(type: "decimal(10,1)", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Vehiculo", x => x.VehiculoId);
-                    table.ForeignKey(
-                        name: "FK_Vehiculo_Combustible_CombustibleId",
-                        column: x => x.CombustibleId,
-                        principalTable: "Combustible",
-                        principalColumn: "CombustibleId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Vehiculo_Seguros_SeguroId",
-                        column: x => x.SeguroId,
-                        principalTable: "Seguros",
-                        principalColumn: "SeguroId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MantenimientoVehiculo",
+                name: "MantenimientosVehiculo",
                 columns: table => new
                 {
                     MantenimientoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VehiculoId = table.Column<int>(type: "int", nullable: false),
                     FechaMantenimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Costo = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MantenimientoVehiculo", x => x.MantenimientoId);
+                    table.PrimaryKey("PK_MantenimientosVehiculo", x => x.MantenimientoId);
                     table.ForeignKey(
-                        name: "FK_MantenimientoVehiculo_Vehiculo_VehiculoId",
+                        name: "FK_MantenimientosVehiculo_Vehiculos_VehiculoId",
                         column: x => x.VehiculoId,
-                        principalTable: "Vehiculo",
+                        principalTable: "Vehiculos",
                         principalColumn: "VehiculoId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -294,39 +227,28 @@ namespace CarRental.Migrations
                     VehiculoId = table.Column<int>(type: "int", nullable: false),
                     FechaRecogida = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalPrecio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LugarRecogida = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LugarEntrega = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Comentarios = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NivelCombustibleRecogida = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NivelCombustibleDevolucion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SeguroId = table.Column<int>(type: "int", nullable: true)
+                    TotalPrecio = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservas", x => x.ReservaId);
                     table.ForeignKey(
-                        name: "FK_Reservas_Cliente_ClienteId",
+                        name: "FK_Reservas_Clientes_ClienteId",
                         column: x => x.ClienteId,
-                        principalTable: "Cliente",
+                        principalTable: "Clientes",
                         principalColumn: "ClienteId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reservas_Seguros_SeguroId",
-                        column: x => x.SeguroId,
-                        principalTable: "Seguros",
-                        principalColumn: "SeguroId");
-                    table.ForeignKey(
-                        name: "FK_Reservas_Vehiculo_VehiculoId",
+                        name: "FK_Reservas_Vehiculos_VehiculoId",
                         column: x => x.VehiculoId,
-                        principalTable: "Vehiculo",
+                        principalTable: "Vehiculos",
                         principalColumn: "VehiculoId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MetodoPago",
+                name: "MetodosPago",
                 columns: table => new
                 {
                     MetodoPagoId = table.Column<int>(type: "int", nullable: false)
@@ -336,14 +258,13 @@ namespace CarRental.Migrations
                     Monto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ReservaId = table.Column<int>(type: "int", nullable: false),
                     EstadoTransaccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProveedorPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Moneda = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ProveedorPago = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MetodoPago", x => x.MetodoPagoId);
+                    table.PrimaryKey("PK_MetodosPago", x => x.MetodoPagoId);
                     table.ForeignKey(
-                        name: "FK_MetodoPago_Reservas_ReservaId",
+                        name: "FK_MetodosPago_Reservas_ReservaId",
                         column: x => x.ReservaId,
                         principalTable: "Reservas",
                         principalColumn: "ReservaId",
@@ -390,15 +311,14 @@ namespace CarRental.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MantenimientoVehiculo_VehiculoId",
-                table: "MantenimientoVehiculo",
+                name: "IX_MantenimientosVehiculo_VehiculoId",
+                table: "MantenimientosVehiculo",
                 column: "VehiculoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MetodoPago_ReservaId",
-                table: "MetodoPago",
-                column: "ReservaId",
-                unique: true);
+                name: "IX_MetodosPago_ReservaId",
+                table: "MetodosPago",
+                column: "ReservaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservas_ClienteId",
@@ -406,24 +326,9 @@ namespace CarRental.Migrations
                 column: "ClienteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservas_SeguroId",
-                table: "Reservas",
-                column: "SeguroId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservas_VehiculoId",
                 table: "Reservas",
                 column: "VehiculoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vehiculo_CombustibleId",
-                table: "Vehiculo",
-                column: "CombustibleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vehiculo_SeguroId",
-                table: "Vehiculo",
-                column: "SeguroId");
         }
 
         /// <inheritdoc />
@@ -445,13 +350,10 @@ namespace CarRental.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Categoria");
+                name: "MantenimientosVehiculo");
 
             migrationBuilder.DropTable(
-                name: "MantenimientoVehiculo");
-
-            migrationBuilder.DropTable(
-                name: "MetodoPago");
+                name: "MetodosPago");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -463,16 +365,10 @@ namespace CarRental.Migrations
                 name: "Reservas");
 
             migrationBuilder.DropTable(
-                name: "Cliente");
+                name: "Clientes");
 
             migrationBuilder.DropTable(
-                name: "Vehiculo");
-
-            migrationBuilder.DropTable(
-                name: "Combustible");
-
-            migrationBuilder.DropTable(
-                name: "Seguros");
+                name: "Vehiculos");
         }
     }
 }
