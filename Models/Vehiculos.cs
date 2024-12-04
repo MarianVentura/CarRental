@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CarRental.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class Vehiculo
 {
@@ -31,20 +32,4 @@ public class Vehiculo
 
     [Required(ErrorMessage = "El color es obligatorio.")]
     public string Color { get; set; }
-
-    // Enum para el tipo de combustible
-    public enum TipoCombustible
-    {
-        Gasolina,
-        Gasol,
-        Gas
-    }
-
-    // Enum para el tipo de transmisión
-    public enum TipoTransmision
-    {
-        Mecanica,
-        Automatica,
-        Hibrida
-    }
 }
