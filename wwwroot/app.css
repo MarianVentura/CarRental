@@ -118,3 +118,389 @@ h1:focus {
         padding-top: 0.6rem;
     }
 }
+
+/* Barra de navegación con imagen de fondo */
+#navbar-container {
+    background-image: url('https://urlshort.app/G4ZNO6');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    height: 450px;
+    padding-top: 80px;
+}
+
+/* Estilos para la navbar */
+.custom-navbar {
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffba08;
+}
+
+.nav-link {
+    transition: color 0.3s ease;
+    font-size: 1.2rem;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+    .nav-link:hover {
+        color: #ffffff;
+        background-color: #ffba08;
+        border-radius: 5px;
+    }
+
+.navbar-toggler-icon {
+    background-color: #ffffff;
+}
+
+/* Fondo principal */
+main {
+    background-color: #ffffff;
+    color: #1c3144;
+}
+
+/* Estilo para la fila superior */
+.top-row {
+    background-color: #ffba08;
+    color: #1c3144;
+}
+
+.top-rower {
+    padding: 20px;
+}
+
+.mt-5 {
+    margin-top: 5rem;
+}
+
+/* Iconos */
+.bi {
+    margin-right: 8px;
+    font-size: 1.4rem;
+}
+
+/* Estilos para el error */
+#blazor-error-ui {
+    background-color: #d00000;
+    padding: 1rem;
+    color: #ffffff;
+    border-radius: 5px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+    #blazor-error-ui a.reload {
+        color: #fff;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+/* Estilo para el contenedor del login */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, var(--background-color), var(--white));
+    padding: 20px;
+}
+
+/* Diseño de la caja de login */
+.login-box {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: var(--white);
+}
+
+/* Imagen de la derecha */
+.login-image {
+    flex: 1;
+    background: url('https://urlshort.app/CDE4D4') no-repeat center center;
+    background-size: cover;
+    border-radius: 15px 0 0 15px;
+}
+
+/* Contenedor del formulario de login */
+.login-form {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--white);
+}
+
+    /* Estilo del título */
+    .login-form h1 {
+        color: var(--text-color);
+        font-size: 2rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+/* Estilo de los campos del formulario */
+.login-input {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+    .login-input input,
+    .login-input select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background-color: #f8f8f8;
+    }
+
+        /* Efecto al poner foco */
+        .login-input input:focus,
+        .login-input select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background-color: #fff;
+        }
+
+    .login-input label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 14px;
+        color: var(--text-color);
+        background-color: var(--white);
+        padding: 0 5px;
+    }
+
+/* Botón de login */
+.login-button {
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    /* Hover effect del botón */
+    .login-button:hover {
+        background-color: var(--accent-color);
+    }
+
+/* Enlaces */
+.login-options {
+    text-align: center;
+    margin-top: 15px;
+}
+
+    .login-options a {
+        color: var(--secondary-color);
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+        .login-options a:hover {
+            text-decoration: underline;
+        }
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .login-box {
+        flex-direction: column;
+    }
+
+    .login-image {
+        display: none;
+    }
+}
+
+/* Mensajes de error */
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-options {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-option-link {
+    color: var(--secondary-color);
+    font-size: 14px;
+    text-decoration: none;
+    margin-right: 15px; /* Agrega un margen entre los enlaces */
+}
+
+    .login-option-link:hover {
+        text-decoration: underline;
+    }
+
+    /*Login*/
+     /* Estilo para el contenedor del login */
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(to right, var(--background-color), var(--white));
+        padding: 20px;
+    }
+
+    /* Diseño de la caja de login */
+    .login-box {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        max-width: 900px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        background-color: var(--white);
+    }
+
+    /* Imagen de la derecha */
+    .login-image {
+        flex: 1;
+        background: url('https://urlshort.app/CDE4D4') no-repeat center center;
+        background-size: cover;
+        border-radius: 15px 0 0 15px;
+    }
+
+    /* Contenedor del formulario de login */
+    .login-form {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: var(--white);
+    }
+
+    /* Estilo del título */
+    .login-form h1 {
+        color: var(--text-color);
+        font-size: 2rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Estilo de los campos del formulario */
+    .login-input {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .login-input input,
+    .login-input select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background-color: #f8f8f8;
+    }
+
+    /* Efecto al poner foco */
+    .login-input input:focus,
+    .login-input select:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        background-color: #fff;
+    }
+
+    .login-input label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 14px;
+        color: var(--text-color);
+        background-color: var(--white);
+        padding: 0 5px;
+    }
+
+    /* Botón de login */
+    .login-button {
+        padding: 12px;
+        background-color: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hover effect del botón */
+    .login-button:hover {
+        background-color: var(--accent-color);
+    }
+
+    /* Enlaces */
+    .login-options {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .login-options a {
+        color: var(--secondary-color);
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    .login-options a:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive design */
+    media (max-width: 768px) {
+        .login-box {
+            flex-direction: column;
+        }
+
+        .login-image {
+            display: none;
+        }
+    }
+
+    /* Mensajes de error */
+    .error-message {
+        color: red;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .login-options {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .login-option-link {
+        color: var(--secondary-color);
+        font-size: 14px;
+        text-decoration: none;
+        margin-right: 15px; /* Agrega un margen entre los enlaces */
+    }
+
+    .login-option-link:hover {
+        text-decoration: underline;
+    }
