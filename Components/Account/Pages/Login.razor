@@ -14,9 +14,9 @@
 
 <EditForm Model="Input" Method="Post" OnValidSubmit="LoginUser" FormName="login" class="container">
     <DataAnnotationsValidator />
-    
+
     <div class="login-box">
-        <div class="login-image"></div> 
+        <div class="login-image"></div>
         <div class="login-form">
             <h1>¡Bienvenido de nuevo!</h1>
             <p>Inicia sesión en tu cuenta</p>
@@ -26,7 +26,7 @@
 
                 <div class="login-input">
                     <label for="role">Seleccionar rol</label>
-                    <select id="role" @bind="Input.Role" class="form-control">
+                    <select id="role" class="form-control" @bind="Input.Role">
                         <option value="">Seleccionar rol</option>
                         <option value="Admin">Administrador</option>
                         <option value="Cliente">Cliente</option>
@@ -59,7 +59,7 @@
 
 @code {
     private string? errorMessage;
-    private EditForm? loginForm; 
+    private EditForm? loginForm;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -91,25 +91,35 @@
 
         if (user != null)
         {
-            // Check if the role matches
+            // Verifica si el usuario tiene el rol correspondiente
             var roles = await UserManager.GetRolesAsync(user);
 
-            if ((Input.Role == "Admin" && roles.Contains("Admin")) || (Input.Role == "Cliente" && roles.Contains("Cliente")))
+            if ((Input.Role == "Admin" && roles.Contains("Admin")) ||
+                (Input.Role == "Cliente" && roles.Contains("Cliente")))
             {
                 var result = await SignInManager.PasswordSignInAsync(user, Input.Password, false, false);
 
                 if (result.Succeeded)
                 {
-                    NavigationManager.NavigateTo("/dashboard");
+                    // Redirige según el rol seleccionado
+                    switch (Input.Role)
+                    {
+                        case "Admin":
+                            NavigationManager.NavigateTo("/Index/Admin");
+                            break;
+                        case "Cliente":
+                            NavigationManager.NavigateTo("/Index/Clientes");
+                            break;
+                    }
                 }
                 else
                 {
-                    errorMessage = "Error de inicio de sesión. Intenta nuevamente.";
+                    errorMessage = "Error de inicio de sesión. Por favor verifica tu correo y contraseña.";
                 }
             }
             else
             {
-                errorMessage = "Rol incorrecto para el usuario.";
+                errorMessage = "Rol incorrecto para este usuario.";
             }
         }
         else
@@ -120,13 +130,16 @@
 
     public class InputModel
     {
-        [Required]
-        public string? Email { get; set; }
-        [Required]
-        public string? Password { get; set; }
+        [Required(ErrorMessage = "Por favor, selecciona un rol.")]
         public string? Role { get; set; }
+        [Required(ErrorMessage = "El correo es obligatorio.")]
+        public string? Email { get; set; }
+        [Required(ErrorMessage = "La contraseña es obligatoria.")]
+        public string? Password { get; set; }
     }
+
 }
+
 
 <style>
     :root {
