@@ -85,7 +85,7 @@ else
             <div class="mb-3">
                 <label>Transmisión:</label>
                 <InputSelect @bind-Value="vehiculoSeleccionado.Transmision" class="form-control">
-                    @foreach (TipoTransmision transmision in Enum.GetValues(typeof(TipoTransmision)))
+                    @foreach (Vehiculo.TipoTransmision transmision in Enum.GetValues(typeof(Vehiculo.TipoTransmision)))
                     {
                         <option value="@transmision">@transmision</option>
                     }
@@ -94,12 +94,13 @@ else
             <div class="mb-3">
                 <label>Combustible:</label>
                 <InputSelect @bind-Value="vehiculoSeleccionado.Combustible" class="form-control">
-                    @foreach (TipoCombustible combustible in Enum.GetValues(typeof(TipoCombustible)))
+                    @foreach (Vehiculo.TipoCombustible combustible in Enum.GetValues(typeof(Vehiculo.TipoCombustible)))
                     {
                         <option value="@combustible">@combustible</option>
                     }
                 </InputSelect>
             </div>
+
             <div class="mb-3">
                 <label>Precio por Día:</label>
                 <InputNumber @bind-Value="vehiculoSeleccionado.PrecioPorDia" class="form-control" />
