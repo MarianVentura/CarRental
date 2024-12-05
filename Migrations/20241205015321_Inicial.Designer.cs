@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20241204011648_Inicial")]
+    [Migration("20241205015321_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -231,6 +231,52 @@ namespace CarRental.Migrations
                     b.ToTable("Reservas");
                 });
 
+            modelBuilder.Entity("CarRental.Models.Vehiculo", b =>
+                {
+                    b.Property<int>("VehiculoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehiculoId"));
+
+                    b.Property<int>("Año")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Combustible")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Disponible")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Imagen")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Marca")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modelo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("PrecioPorDia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Transmision")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VehiculoId");
+
+                    b.ToTable("Vehiculos");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -364,55 +410,9 @@ namespace CarRental.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Vehiculo", b =>
-                {
-                    b.Property<int>("VehiculoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehiculoId"));
-
-                    b.Property<int>("Año")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Combustible")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Disponible")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Imagen")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Marca")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Modelo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("PrecioPorDia")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Transmision")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("VehiculoId");
-
-                    b.ToTable("Vehiculos");
-                });
-
             modelBuilder.Entity("CarRental.Models.MantenimientoVehiculo", b =>
                 {
-                    b.HasOne("Vehiculo", "Vehiculo")
+                    b.HasOne("CarRental.Models.Vehiculo", "Vehiculo")
                         .WithMany()
                         .HasForeignKey("VehiculoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -440,7 +440,7 @@ namespace CarRental.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vehiculo", "Vehiculo")
+                    b.HasOne("CarRental.Models.Vehiculo", "Vehiculo")
                         .WithMany()
                         .HasForeignKey("VehiculoId")
                         .OnDelete(DeleteBehavior.Cascade)
