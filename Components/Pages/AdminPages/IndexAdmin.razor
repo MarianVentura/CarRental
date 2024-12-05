@@ -1,7 +1,121 @@
 ﻿@page "/Index/Admin"
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Hola Admin...............</h3>
+@*//Cerrar Sesión//
+<a href="/" class="btn custom-logout-btn back-button mt-4">
+    <i class="fa-solid fa-right-from-bracket"></i>
+</a> *@
+
+<div class="container mt-5" style="font-family: 'Poppins', sans-serif; margin-top: 200px;">
+    <div class="card text-center" style="background-color: #A2AEBB;">
+        <div class="card-header" style="background-color: #1C3144; color: white;">
+            <h2 style="font-family: 'Permanent Marker', sans-serif; font-weight: bold;">Bienvenido, Administrador</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Cards para funcionalidades -->
+                <div class="col-md-4 mb-4">
+                    <a href="/Admin/Reservations" class="small-card">
+                        <img src="https://urlshort.app/BG1ZEJ" alt="Reservas" class="img-fluid">
+                        <h5>Gestionar Reservas</h5>
+                    </a>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <a href="/Admin/vehiculos" class="small-card">
+                        <img src="https://urlshort.app/E5YAW0" alt="Vehículos" class="img-fluid">
+                        <h5>Gestionar Vehículos</h5>
+                    </a>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <a href="/Admin/Clients" class="small-card">
+                        <img src="https://urlshort.app/NS9XBH" alt="Clientes" class="img-fluid">
+                        <h5>Gestionar Clientes</h5>
+                    </a>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <a href="/Admin/Employees" class="small-card">
+                        <img src="https://urlshort.app/NOOIWV" alt="Empleados" class="img-fluid">
+                        <h5>Gestionar Empleados</h5>
+                    </a>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <a href="/Admin/Financials" class="small-card">
+                        <img src="https://urlshort.app/EUKGGJ" alt="Finanzas" class="img-fluid">
+                        <h5>Gestión Financiera</h5>
+                    </a>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <a href="/Admin/Reports" class="small-card">
+                        <img src="https://urlshort.app/XN3F9Y" alt="Reportes" class="img-fluid">
+                        <h5>Reportes</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+
+    .small-card {
+        display: block;
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+        height: 150px;
+        text-decoration: none;
+        color: black;
+    }
+
+        .small-card:hover {
+            transform: scale(1.05);
+        }
+
+        .small-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+    .custom-logout-btn {
+        background-color: #D00000;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 20px;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-logout-btn:hover {
+            background-color: #FFBA08;
+        }
+
+    .back-button {
+        position: absolute;
+        top: 75px;
+        right: 15px;
+        z-index: 10;
+    }
+
+    .card-header {
+        font-size: 24px;
+    }
+</style>
 
 @code {
+    private ClaimsPrincipal? user;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+    }
 }
