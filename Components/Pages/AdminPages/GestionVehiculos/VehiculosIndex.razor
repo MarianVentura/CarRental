@@ -1,145 +1,166 @@
-﻿@page "/vehiculos"
+﻿@page "/Admin/vehiculos"
 @using BlazorBootstrap
 @using CarRental.Extensors
 @inject VehiculosService VehiculosService
 @inject ToastService ToastService
 @inject NavigationManager NavigationManager
 
-
-
 <PageTitle>Gestión de Vehículos</PageTitle>
 
-<div class="container mt-4">
-    <h3>Gestión de Vehículos</h3>
+<style>
+    .titulo {
+        font-size: 2.5rem;
+        color: #1C3144;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <input type="text" class="form-control" @bind="searchMarca" @oninput="BuscarVehiculos" placeholder="Buscar por marca..." />
+    .filter-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .filter-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .add-button-container {
+        text-align: right;
+    }
+
+    .search-box {
+        width: 50%;
+        padding: 10px;
+        border-radius: 50px;
+        border: 2px solid #1C3144;
+        font-size: 1rem;
+    }
+
+    .btn-custom {
+        background-color: #FFBA08;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        border-radius: 50px;
+    }
+
+        .btn-custom:hover {
+            background-color: #D00000;
+        }
+
+    .form-select {
+        width: auto;
+        border-radius: 50px;
+        border: 2px solid #1C3144;
+    }
+</style>
+
+<div class="container mt-5">
+    <!-- Título -->
+    <h1 class="titulo">Gestión de Vehículos</h1>
+
+    <!-- Barra de filtros y búsqueda -->
+    <div class="filter-container">
+        <div class="filter-bar">
+            <select @bind="filtro" class="form-select">
+                <option value="" disabled selected>Filtrar por:</option>
+                <option value="marca">Marca</option>
+                <option value="modelo">Modelo</option>
+                <option value="disponibilidad">Disponibilidad</option>
+                <option value="color">Color</option>
+                <option value="año">Año</option>
+            </select>
+
+            <input type="text" class="form-control search-box" placeholder="Buscar..." @bind="busqueda" @oninput="AplicarFiltro" />
         </div>
-        <div class="col-md-6 text-end">
-            <button class="btn btn-primary" @onclick="CargarVehiculosDisponibles">Ver vehículos disponibles</button>
+
+        <!-- Botón para agregar vehículos -->
+        <div class="add-button-container">
+            <a href="/agregar-vehiculo" class="btn btn-custom text-decoration-none">
+                <i class="bi bi-plus-lg"></i> Agregar Vehículo
+            </a>
         </div>
     </div>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Año</th>
-                <th>Precio/Día</th>
-                <th>Disponibilidad</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var vehiculo in vehiculos)
-            {
-                <tr>
-                    <td>@vehiculo.Marca</td>
-                    <td>@vehiculo.Modelo</td>
-                    <td>@vehiculo.Año</td>
-                    <td>@vehiculo.PrecioPorDia.ToString("C")</td>
-                    <td>
-                        @if (vehiculo.Disponible)
-                        {
-                            <span class="badge bg-success">Disponible</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">No Disponible</span>
-                        }
-                    </td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" @onclick="() => EditarVehiculo(vehiculo.VehiculoId)">Editar</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => EliminarVehiculo(vehiculo.VehiculoId)">Eliminar</button>
-                        <button class="btn btn-info btn-sm" @onclick="() => ActualizarDisponibilidad(vehiculo.VehiculoId, !vehiculo.Disponible)">
-                            @if (vehiculo.Disponible)
-                            {
-                                <span>Marcar como no disponible</span>
-                            }
-                            else
-                            {
-                                <span>Marcar como disponible</span>
-                            }
+    <!-- Listado de vehículos -->
+    <div class="row">
+        @foreach (var vehiculo in vehiculosFiltrados)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <img src="@vehiculo.Imagen" class="card-img-top" alt="@vehiculo.Marca">
+                    <div class="card-body">
+                        <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo</h5>
+                        <p>@vehiculo.Año</p>
+                        <p>Precio/Día: @vehiculo.PrecioPorDia.ToString("C")</p>
+                        <span class="badge @(vehiculo.Disponible ? "bg-success" : "bg-danger")">
+                            @(vehiculo.Disponible ? "Disponible" : "No Disponible")
+                        </span>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a href="/Vehiculos/Details/@vehiculo.VehiculoId" class="btn btn-warning text-white btn-action mx-2" title="Ver detalles">
+                            <i class="bi bi-info-circle"></i>
+                        </a>
+                        <button class="btn btn-danger btn-action mx-2" @onclick="() => EliminarVehiculo(vehiculo.VehiculoId)">
+                            <i class="bi bi-trash3"></i>
                         </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 @code {
     private List<Vehiculo> vehiculos = new();
-    private string searchMarca;
+    private List<Vehiculo> vehiculosFiltrados = new();
+    private string filtro = string.Empty;
+    private string busqueda = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        await CargarVehiculos();
-    }
-
-    private async Task CargarVehiculos()
-    {
         vehiculos = await VehiculosService.ListaVehiculos();
+        AplicarFiltro();
     }
 
-    private async Task BuscarVehiculos()
+    private void AplicarFiltro()
     {
-        if (string.IsNullOrWhiteSpace(searchMarca))
-        {
-            await CargarVehiculos();
-        }
-        else
-        {
-            vehiculos = await VehiculosService.BuscarVehiculosPorMarca(searchMarca);
-        }
+        vehiculosFiltrados = vehiculos.Where(v =>
+            (string.IsNullOrEmpty(busqueda) ||
+                (filtro == "marca" && v.Marca.Contains(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "modelo" && v.Modelo.Contains(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "disponibilidad" && v.Disponible.ToString().Equals(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "color" && v.Color.Contains(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "año" && v.Año.ToString().Contains(busqueda, StringComparison.OrdinalIgnoreCase)))
+        ).ToList();
     }
 
-    private async Task CargarVehiculosDisponibles()
+    private void AgregarVehiculo()
     {
-        vehiculos = await VehiculosService.ObtenerVehiculosDisponibles();
-    }
-
-    private async Task EditarVehiculo(int vehiculoId)
-    {
-        // Redirigir al componente de edición
-        NavigationManager.NavigateTo($"/vehiculo/editar/{vehiculoId}");
+        NavigationManager.NavigateTo("/Admin/CreateVehiculo");
     }
 
     private async Task EliminarVehiculo(int vehiculoId)
     {
-        // Confirmación en JavaScript usando el método confirm
-        var confirm = await JSRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro de eliminar este vehículo?");
-
-        if (confirm)
+        if (await VehiculosService.EliminarVehiculo(vehiculoId))
         {
-            var eliminado = await VehiculosService.EliminarVehiculo(vehiculoId);
-
-            if (eliminado)
-            {
-                ToastService.ShowSuccess("Vehículo eliminado correctamente.");
-                await CargarVehiculos(); // Recargar la lista después de eliminar
-            }
-            else
-            {
-                ToastService.ShowError("No se pudo eliminar el vehículo.");
-            }
-        }
-    }
-
-
-    private async Task ActualizarDisponibilidad(int vehiculoId, bool disponible)
-    {
-        var actualizado = await VehiculosService.ActualizarDisponibilidad(vehiculoId, disponible);
-        if (actualizado)
-        {
-            ToastService.ShowSuccess("Disponibilidad actualizada correctamente.");
-            await CargarVehiculos(); // Recargar la lista después de actualizar
+            ToastService.ShowSuccess("Vehículo eliminado correctamente.");
+            vehiculos.RemoveAll(v => v.VehiculoId == vehiculoId);
+            AplicarFiltro();
         }
         else
         {
-            ToastService.ShowError("No se pudo actualizar la disponibilidad.");
+            ToastService.ShowError("Error al eliminar el vehículo.");
         }
     }
 }
