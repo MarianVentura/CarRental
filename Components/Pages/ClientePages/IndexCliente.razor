@@ -53,7 +53,7 @@
 </AuthorizeView>
 
 @code {
-    private List<Vehiculos>? vehiculosDisponibles;
+    private List<Vehiculo>? vehiculosDisponibles;
     private string NombreCliente = string.Empty;
 
     protected override async Task OnInitializedAsync()
@@ -84,4 +84,4 @@
         NavigationManager.NavigateTo($"/reservar/{vehiculoId}");
     }
 }
- *@
+  *@

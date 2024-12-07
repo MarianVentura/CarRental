@@ -102,21 +102,18 @@ namespace CarRental.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Identificacion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("NumeroIdentificacion")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
@@ -252,11 +249,12 @@ namespace CarRental.Migrations
 
                     b.Property<string>("Imagen")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Marca")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Modelo")
                         .IsRequired()
@@ -265,11 +263,14 @@ namespace CarRental.Migrations
                     b.Property<decimal>("PrecioPorDia")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Transmision")
+                    b.Property<string>("TipoTransmision")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("VehiculoId");
+
+                    b.HasIndex("Marca")
+                        .HasDatabaseName("IX_Vehiculo_Marca");
 
                     b.ToTable("Vehiculos");
                 });
@@ -440,7 +441,7 @@ namespace CarRental.Migrations
                     b.HasOne("CarRental.Models.Vehiculo", "Vehiculo")
                         .WithMany()
                         .HasForeignKey("VehiculoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cliente");

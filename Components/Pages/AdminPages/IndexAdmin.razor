@@ -1,121 +1,189 @@
 ﻿@page "/Index/Admin"
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
-@*//Cerrar Sesión//
-<a href="/" class="btn custom-logout-btn back-button mt-4">
-    <i class="fa-solid fa-right-from-bracket"></i>
-</a> *@
-
-<div class="container mt-5" style="font-family: 'Poppins', sans-serif; margin-top: 200px;">
-    <div class="card text-center" style="background-color: #A2AEBB;">
-        <div class="card-header" style="background-color: #1C3144; color: white;">
-            <h2 style="font-family: 'Permanent Marker', sans-serif; font-weight: bold;">Bienvenido, Administrador</h2>
+<!-- Bienvenida al Administrador -->
+<div class="container mt-5 text-center">
+    <div class="card welcome-card">
+        <div class="card-header welcome-header">
+            <h2 class="welcome-title">¡Bienvenido Administrador!</h2>
         </div>
         <div class="card-body">
-            <div class="row">
-                <!-- Cards para funcionalidades -->
-                <div class="col-md-4 mb-4">
-                    <a href="/Admin/Reservations" class="small-card">
-                        <img src="https://urlshort.app/BG1ZEJ" alt="Reservas" class="img-fluid">
-                        <h5>Gestionar Reservas</h5>
+            <p class="welcome-text">
+                Administra las operaciones de <strong>CarRental</strong> desde este panel. Selecciona una de las opciones para comenzar.
+            </p>
+            <a href="/" class="btn btn-exit">
+                <i class="bi bi-box-arrow-right"></i> Salir
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+        <!-- Card para Gestionar Reservas -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-custom">
+                <img src="https://urlshort.app/BG1ZEJ" alt="Gestionar Reservas" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title card-title-custom">Gestionar Reservas</h5>
+                    <p class="card-text">Administra las reservas activas y pendientes.</p>
+                    <a href="/Admin/Reservations" class="btn btn-card">
+                        <i class="bi bi-calendar-check"></i> Gestionar Reservas
                     </a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <a href="/Admin/vehiculos" class="small-card">
-                        <img src="https://urlshort.app/E5YAW0" alt="Vehículos" class="img-fluid">
-                        <h5>Gestionar Vehículos</h5>
+            </div>
+        </div>
+
+        <!-- Card para Gestionar Vehículos -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-custom">
+                <img src="https://urlshort.app/E5YAW0" alt="Gestionar Vehículos" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title card-title-custom">Gestionar Vehículos</h5>
+                    <p class="card-text">Controla y administra la flota de vehículos.</p>
+                    <a href="/Admin/vehiculos" class="btn btn-card">
+                        <i class="bi bi-car-front-fill"></i> Gestionar Vehículos
                     </a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <a href="/Admin/Clients" class="small-card">
-                        <img src="https://urlshort.app/NS9XBH" alt="Clientes" class="img-fluid">
-                        <h5>Gestionar Clientes</h5>
+            </div>
+        </div>
+
+        <!-- Card para Gestionar Clientes -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-custom">
+                <img src="https://urlshort.app/NS9XBH" alt="Gestionar Clientes" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title card-title-custom">Gestionar Clientes</h5>
+                    <p class="card-text">Registra y administra información de clientes.</p>
+                    <a href="/Admin/Clients" class="btn btn-card">
+                        <i class="bi bi-people-fill"></i> Gestionar Clientes
                     </a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <a href="/Admin/Employees" class="small-card">
-                        <img src="https://urlshort.app/NOOIWV" alt="Empleados" class="img-fluid">
-                        <h5>Gestionar Empleados</h5>
+            </div>
+        </div>
+
+        <!-- Card para Gestionar Empleados -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-custom">
+                <img src="https://urlshort.app/NOOIWV" alt="Gestionar Empleados" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title card-title-custom">Gestionar Empleados</h5>
+                    <p class="card-text">Administra los empleados de la empresa.</p>
+                    <a href="/Admin/Employees" class="btn btn-card">
+                        <i class="bi bi-person-badge-fill"></i> Gestionar Empleados
                     </a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <a href="/Admin/Financials" class="small-card">
-                        <img src="https://urlshort.app/EUKGGJ" alt="Finanzas" class="img-fluid">
-                        <h5>Gestión Financiera</h5>
+            </div>
+        </div>
+
+        <!-- Card para Gestión Financiera -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-custom">
+                <img src="https://urlshort.app/EUKGGJ" alt="Gestión Financiera" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title card-title-custom">Gestión Financiera</h5>
+                    <p class="card-text">Consulta y administra los datos financieros.</p>
+                    <a href="/Admin/Financials" class="btn btn-card">
+                        <i class="bi bi-bar-chart-fill"></i> Gestión Finanzas
                     </a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <a href="/Admin/Reports" class="small-card">
-                        <img src="https://urlshort.app/XN3F9Y" alt="Reportes" class="img-fluid">
-                        <h5>Reportes</h5>
+            </div>
+        </div>
+
+        <!-- Card para Reportes -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-custom">
+                <img src="https://urlshort.app/XN3F9Y" alt="Reportes" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title card-title-custom">Reportes</h5>
+                    <p class="card-text">Genera reportes detallados de las operaciones.</p>
+                    <a href="/Admin/Reports" class="btn btn-card">
+                        <i class="bi bi-file-earmark-bar-graph-fill"></i> Reportes
                     </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    .card {
-        border-radius: 15px;
-    }
 
-    .small-card {
-        display: block;
-        background-color: white;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-        height: 150px;
-        text-decoration: none;
-        color: black;
-    }
-
-        .small-card:hover {
-            transform: scale(1.05);
-        }
-
-        .small-card img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-
-    .custom-logout-btn {
-        background-color: #D00000;
-        color: #fff;
-        border: none;
-        border-radius: 50px;
-        padding: 8px 20px;
-        transition: background-color 0.3s ease;
-    }
-
-        .custom-logout-btn:hover {
-            background-color: #FFBA08;
-        }
-
-    .back-button {
-        position: absolute;
-        top: 75px;
-        right: 15px;
-        z-index: 10;
-    }
-
-    .card-header {
-        font-size: 24px;
-    }
-</style>
 
 @code {
-    private ClaimsPrincipal? user;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
-    }
+    private void NavigateToReservations() => NavigationManager.NavigateTo("/Admin/Reservations");
+    private void NavigateToVehiculos() => NavigationManager.NavigateTo("/Admin/vehiculos");
+    private void NavigateToClients() => NavigationManager.NavigateTo("/Admin/Clients");
+    private void NavigateToEmployees() => NavigationManager.NavigateTo("/Admin/Employees");
+    private void NavigateToFinancials() => NavigationManager.NavigateTo("/Admin/Financials");
+    private void NavigateToReports() => NavigationManager.NavigateTo("/Admin/Reports");
 }
+
+<style>
+    /* Título principal */
+    .titulo-principal {
+        font-size: 2.5rem;
+        color: #D00000; /* Rojo vibrante */
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Subtítulo */
+    .subtitulo {
+        font-size: 1.2rem;
+        color: #3F88C5; /* Azul vibrante */
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    /* Tarjetas personalizadas */
+    .card-custom {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        text-align: center;
+        background-color: #A2AEBB; /* Gris pastel */
+    }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+    /* Títulos de las tarjetas */
+    .card-title-custom {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1C3144; /* Azul oscuro */
+    }
+
+    /* Botones de las tarjetas */
+    .btn-card {
+        background-color: #FFBA08; /* Amarillo vibrante */
+        color: white;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: background-color 0.3s;
+        border: none;
+        text-decoration: none;
+    }
+
+        .btn-card:hover {
+            background-color: #D00000; /* Rojo vibrante */
+        }
+
+    /* Estilo de las imágenes en las tarjetas */
+    .card-img-top {
+        width: 100%;
+        height: 180px; /* Altura fija para las imágenes */
+        object-fit: cover; /* Mantiene la proporción sin distorsionar */
+        border-radius: 10px;
+    }
+
+    .container {
+        margin-top: 40px;
+    }
+</style>

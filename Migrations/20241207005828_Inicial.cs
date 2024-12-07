@@ -57,11 +57,10 @@ namespace CarRental.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombres = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Identificacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NumeroIdentificacion = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Identificacion = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,14 +73,14 @@ namespace CarRental.Migrations
                 {
                     VehiculoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Marca = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Marca = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Modelo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Año = table.Column<int>(type: "int", nullable: false),
                     PrecioPorDia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Disponible = table.Column<bool>(type: "bit", nullable: false),
-                    Imagen = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Imagen = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Combustible = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Transmision = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoTransmision = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -227,8 +226,8 @@ namespace CarRental.Migrations
                     VehiculoId = table.Column<int>(type: "int", nullable: false),
                     FechaRecogida = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalPrecio = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    TotalPrecio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,7 +243,7 @@ namespace CarRental.Migrations
                         column: x => x.VehiculoId,
                         principalTable: "Vehiculos",
                         principalColumn: "VehiculoId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,6 +328,11 @@ namespace CarRental.Migrations
                 name: "IX_Reservas_VehiculoId",
                 table: "Reservas",
                 column: "VehiculoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehiculo_Marca",
+                table: "Vehiculos",
+                column: "Marca");
         }
 
         /// <inheritdoc />

@@ -1,32 +1,25 @@
 ﻿@inherits LayoutComponentBase
 
-<Toasts class="p-3" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
-
-<!-- Barra de navegación (Navbar) con imagen de fondo -->
-<div class="navbar-container" id="navbar-container">
+<!-- Contenedor de la barra de navegación con imagen de fondo -->
+<div id="navbar-container">
     <div class="navbar navbar-expand-lg fixed-top custom-navbar" id="NavigationBar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/" style="font-family: 'Poppins', sans-serif; font-size: 1.8rem; color: var(--accent-color);">
-                DriverChoice
+            <a class="navbar-brand" href="/" style="font-family: 'Poppins', sans-serif;">
+                <i class="bi bi-car-front"></i> CarRental
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon" style="background-color: var(--accent-color);"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                            <span class="bi bi-house-door" aria-hidden="true"></span> Inicio
+                            <i class="bi bi-house-door"></i> Inicio
                         </NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/vehiculos">
-                            <span class="bi bi-car-front" aria-hidden="true"></span> Vehículos
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/clientes">
-                            <span class="bi bi-person" aria-hidden="true"></span> Clientes
+                        <NavLink class="nav-link" href="https://wa.me/18096680075" Match="NavLinkMatch.All">
+                            <i class="bi bi-whatsapp"></i> Contactos
                         </NavLink>
                     </li>
                 </ul>
@@ -36,27 +29,87 @@
 </div>
 
 <!-- Contenido principal -->
-<main class="p-4 bg-white">
+<main class="flex-grow-1 p-4 mt-5 pt-5">
     <article class="content">
         @Body
     </article>
 </main>
 
+<style>
+    /* Barra de navegación con imagen de fondo */
+    #navbar-container {
+        background-image: url('https://urlshort.app/G4ZNO6');
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+        height: 450px;
+        padding-top: 80px;
+    }
 
-<!-- Error UI -->
-<div id="blazor-error-ui" style="background-color: var(--secondary-color);">
-    An unhandled error has occurred.
-    <a href="" class="reload" style="color: white; font-weight: bold; text-decoration: underline;">Reload</a>
-    <a class="dismiss" style="color: white;">🗙</a>
-</div>
+    /* Estilos para la navbar */
+    .custom-navbar {
+        background-color: rgba(0, 0, 0, 0.5); /* Transparencia */
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .navbar-brand {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #ffba08;
+    }
+
+    .nav-link {
+        transition: color 0.3s ease;
+        font-size: 1.2rem;
+        color: #ffffff;
+        font-weight: 500;
+    }
+
+        .nav-link:hover {
+            color: #ffffff;
+            background-color: #ffba08;
+            border-radius: 5px;
+        }
+
+    .navbar-toggler-icon {
+        background-color: #ffffff;
+    }
+
+    /* Fondo principal */
+    main {
+        background-color: #ffffff;
+        color: #1c3144;
+    }
+
+    /* Estilo para la fila superior */
+    .top-row {
+        background-color: #ffba08;
+        color: #1c3144;
+    }
+
+    .top-rower {
+        padding: 20px;
+    }
+
+    .mt-5 {
+        margin-top: 5rem;
+    }
+
+    /* Iconos */
+    .bi {
+        margin-right: 8px;
+        font-size: 1.4rem;
+    }
+</style>
 
 <script>
+    // Cambia el fondo de la barra de navegación al hacer scroll
     window.addEventListener('scroll', function () {
         const navbar = document.querySelector('.custom-navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('navbar-scrolled');
+        if (window.scrollY > 10) {
+            navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
         } else {
-            navbar.classList.remove('navbar-scrolled');
+            navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         }
     });
 </script>
