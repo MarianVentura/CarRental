@@ -1,5 +1,4 @@
 ﻿@page "/agregar-vehiculo"
-@using CarRental.Models
 @inject VehiculosService VehiculosService
 @inject ToastService ToastService
 @inject NavigationManager NavigationManager
@@ -7,102 +6,142 @@
 
 <PageTitle>Agregar Vehículo</PageTitle>
 
-<EditForm Model="@nuevoVehiculo" OnValidSubmit="GuardarVehiculo" FormName="agregarVehiculo" method="post">
+<EditForm Model="nuevoVehiculo" OnValidSubmit="GuardarVehiculo" FormName="NuevoVehiculo">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="container mt-4">
-        <div class="card shadow-lg" style="max-width: 600px; margin: 0 auto;">
-            @* Header *@
-            <div class="card-header d-flex flex-column align-items-center" style="background-color: #FB6107; color: white; text-align: center; padding: 30px 20px 20px;">
-                <div class="image-container" style="width: 90px; height: 90px; border-radius: 50%; background-color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); margin-bottom: 15px;">
-                    <img src="https://www.iconpacks.net/icons/1/free-car-icon-305-thumb.png" alt="Vehicle Icon" style="width: 50px; height: 50px; border-radius: 50%;" />
-                </div>
-                <h2 style="font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px;">
-                    Agregar Vehículo
-                </h2>
+    <div class="container mt-5 pt-5">
+        <div class="card shadow-lg">
+            <!-- Header -->
+            <div class="card-header" style="background-color: #1C3144; color: white;">
+                <h2 class="mb-0" style="font-family: 'Poppins', sans-serif;"><strong>Agregar Vehículo</strong></h2>
             </div>
 
-            @* Body *@
-            <div class="card-body">
+            <!-- Body -->
+            <div class="card-body" style="background-color: #A2AEBB;">
+                @* Campos de Entrada *@
                 <div class="mb-3">
-                    <label class="form-label" for="marca" style="font-family: 'Poppins', sans-serif;"><strong>Marca:</strong></label>
-                    <InputText id="marca" @bind-Value="nuevoVehiculo.Marca" class="form-control" style="border: 1px solid gray;" required />
-                    <ValidationMessage For="() => nuevoVehiculo.Marca" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="modelo" style="font-family: 'Poppins', sans-serif;"><strong>Modelo:</strong></label>
-                    <InputText id="modelo" @bind-Value="nuevoVehiculo.Modelo" class="form-control" style="border: 1px solid gray;" required />
-                    <ValidationMessage For="() => nuevoVehiculo.Modelo" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="anio" style="font-family: 'Poppins', sans-serif;"><strong>Año:</strong></label>
-                    <InputNumber id="anio" @bind-Value="nuevoVehiculo.Año" class="form-control" style="border: 1px solid gray;" required />
-                    <ValidationMessage For="() => nuevoVehiculo.Año" />
+                    <label class="form-label" for="marca" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Marca</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-car-front"></i>
+                        </span>
+                        <InputText id="marca" @bind-Value="nuevoVehiculo.Marca" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.Marca)" />
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="precioPorDia" style="font-family: 'Poppins', sans-serif;"><strong>Precio por Día:</strong></label>
-                    <InputNumber id="precioPorDia" @bind-Value="nuevoVehiculo.PrecioPorDia" class="form-control" style="border: 1px solid gray;" required />
-                    <ValidationMessage For="() => nuevoVehiculo.PrecioPorDia" />
+                    <label class="form-label" for="modelo" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Modelo</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-cpu"></i>
+                        </span>
+                        <InputText id="modelo" @bind-Value="nuevoVehiculo.Modelo" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.Modelo)" />
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="color" style="font-family: 'Poppins', sans-serif;"><strong>Color:</strong></label>
-                    <InputText id="color" @bind-Value="nuevoVehiculo.Color" class="form-control" style="border: 1px solid gray;" required />
-                    <ValidationMessage For="() => nuevoVehiculo.Color" />
+                    <label class="form-label" for="anio" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Año</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-calendar"></i>
+                        </span>
+                        <InputNumber id="anio" @bind-Value="nuevoVehiculo.Año" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.Año)" />
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="transmision" style="font-family: 'Poppins', sans-serif;"><strong>Transmisión:</strong></label>
-                    <InputSelect id="transmision" @bind-Value="nuevoVehiculo.Transmision" class="form-control" style="border: 1px solid gray;" required>
-                        @foreach (Vehiculo.TipoTransmision transmision in Enum.GetValues(typeof(Vehiculo.TipoTransmision)))
-                        {
-                            <option value="@transmision">@transmision</option>
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="() => nuevoVehiculo.Transmision" />
+                    <label class="form-label" for="precioPorDia" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Precio por Día</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-cash-stack"></i>
+                        </span>
+                        <InputNumber id="precioPorDia" @bind-Value="nuevoVehiculo.PrecioPorDia" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.PrecioPorDia)" />
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="combustible" style="font-family: 'Poppins', sans-serif;"><strong>Combustible:</strong></label>
-                    <InputSelect id="combustible" @bind-Value="nuevoVehiculo.Combustible" class="form-control" style="border: 1px solid gray;" required>
-                        @foreach (Vehiculo.TipoCombustible combustible in Enum.GetValues(typeof(Vehiculo.TipoCombustible)))
-                        {
-                            <option value="@combustible">@combustible</option>
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="() => nuevoVehiculo.Combustible" />
+                    <label class="form-label" for="disponible" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Disponibilidad</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-check-circle"></i>
+                        </span>
+                        <InputCheckbox id="disponible" @bind-Value="nuevoVehiculo.Disponible" class="form-check-input" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.Disponible)" />
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="imagenes" style="font-family: 'Poppins', sans-serif;"><strong>Imágenes del Vehículo:</strong></label>
-                    <InputFile id="imagenes" OnChange="OnImageChange" multiple class="form-control" />
+                    <label class="form-label" for="imagen" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Imagen</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-image"></i>
+                        </span>
+                        <InputText id="imagen" @bind-Value="nuevoVehiculo.Imagen" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.Imagen)" />
                 </div>
 
-                <div class="row mb-3">
-                    @if (imagenesCargadas.Any())
-                    {
-                        @foreach (var imagen in imagenesCargadas)
-                        {
-                            <div class="col-md-3">
-                                <img src="@imagen" alt="Imagen del Vehículo" class="img-fluid rounded mb-2" style="max-height: 150px; object-fit: cover;" />
-                            </div>
-                        }
-                    }
+                <div class="mb-3">
+                    <label class="form-label" for="combustible" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Combustible</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-fuel"></i>
+                        </span>
+                        <InputText id="combustible" @bind-Value="nuevoVehiculo.Combustible" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.Combustible)" />
                 </div>
-            </div>
 
-            @* Footer *@
-            <div class="card-footer d-flex justify-content-between">
-                <button type="submit" class="btn" style="background-color: #FB6107; color: white;">
-                    <i class="fa-solid fa-save"></i> Guardar Vehículo
-                </button>
-                <button type="button" class="btn" style="background-color: #2EC4B6; color: white;" @onclick="Cancelar">
-                    <i class="fa-solid fa-arrow-left"></i> Volver
-                </button>
+                <div class="mb-3">
+                    <label class="form-label" for="tipoTransmision" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Tipo de Transmisión</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-gear"></i>
+                        </span>
+                        <InputText id="tipoTransmision" @bind-Value="nuevoVehiculo.TipoTransmision" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.TipoTransmision)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="color" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Color</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-paint-bucket"></i>
+                        </span>
+                        <InputText id="color" @bind-Value="nuevoVehiculo.Color" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => nuevoVehiculo.Color)" />
+                </div>
+
+                <div class="mb-3 text-center">
+                    <button type="submit" class="btn" style="background-color: #FF9F1C; color: white; width: 150px; font-size: 18px;">
+                        Guardar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -110,45 +149,13 @@
 
 @code {
     private Vehiculo nuevoVehiculo = new Vehiculo();
-    private List<string> imagenesCargadas = new List<string>();
 
     private async Task GuardarVehiculo()
     {
-        if (nuevoVehiculo != null)
+        var exito = await VehiculosService.AgregarVehiculo(nuevoVehiculo);
+        if (exito)
         {
-            var exito = await VehiculosService.AgregarVehiculo(nuevoVehiculo);
-            if (exito)
-            {
-                ToastService.ShowSuccess("Vehículo agregado correctamente.");
-                NavigationManager.NavigateTo("/Admin/vehiculos");
-            }
-            else
-            {
-                ToastService.ShowError("Error al agregar el vehículo. Intenta nuevamente.");
-            }
+            NavigationManager.NavigateTo("/vehiculos");
         }
-    }
-
-    private void Cancelar()
-    {
-        ToastService.ShowWarning("¿Estás seguro que quieres cancelar?", "Cancelar Acción");
-        NavigationManager.NavigateTo("/Admin/vehiculos");
-    }
-
-    private void OnImageChange(InputFileChangeEventArgs e)
-    {
-        var archivos = e.GetMultipleFiles();
-        foreach (var archivo in archivos)
-        {
-            // Cargar la imagen como una URL de datos base64 para previsualizarla
-            var stream = archivo.OpenReadStream();
-            var reader = new System.IO.MemoryStream();
-            stream.CopyTo(reader);
-            var base64String = Convert.ToBase64String(reader.ToArray());
-            var imageUrl = $"data:image/{archivo.ContentType.Split('/')[1]};base64,{base64String}";
-
-            imagenesCargadas.Add(imageUrl);
-        }
-        StateHasChanged(); // Refrescar la UI
     }
 }
