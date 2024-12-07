@@ -8,7 +8,6 @@
 
 <EditForm Model="nuevoVehiculo" OnValidSubmit="GuardarVehiculo" FormName="NuevoVehiculo">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
     <div class="container mt-5 pt-5">
         <div class="card shadow-lg">
@@ -29,8 +28,8 @@
                             <i class="bi bi-car-front"></i>
                         </span>
                         <InputText id="marca" @bind-Value="nuevoVehiculo.Marca" class="form-control" style="border: 1px solid #3F88C5;" />
-                    </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.Marca)" />
+                    </div>     
+                    <ValidationMessage For="@(() => nuevoVehiculo.Marca)" />
                 </div>
 
                 <div class="mb-3">
@@ -43,7 +42,7 @@
                         </span>
                         <InputText id="modelo" @bind-Value="nuevoVehiculo.Modelo" class="form-control" style="border: 1px solid #3F88C5;" />
                     </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.Modelo)" />
+                    <ValidationMessage For="@(() => nuevoVehiculo.Modelo)" />
                 </div>
 
                 <div class="mb-3">
@@ -56,7 +55,7 @@
                         </span>
                         <InputNumber id="anio" @bind-Value="nuevoVehiculo.Año" class="form-control" style="border: 1px solid #3F88C5;" />
                     </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.Año)" />
+                    <ValidationMessage For="@(() => nuevoVehiculo.Año)" />
                 </div>
 
                 <div class="mb-3">
@@ -69,7 +68,7 @@
                         </span>
                         <InputNumber id="precioPorDia" @bind-Value="nuevoVehiculo.PrecioPorDia" class="form-control" style="border: 1px solid #3F88C5;" />
                     </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.PrecioPorDia)" />
+                    <ValidationMessage For="@(() => nuevoVehiculo.PrecioPorDia)" />
                 </div>
 
                 <div class="mb-3">
@@ -82,7 +81,7 @@
                         </span>
                         <InputCheckbox id="disponible" @bind-Value="nuevoVehiculo.Disponible" class="form-check-input" />
                     </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.Disponible)" />
+                    <ValidationMessage For="@(() => nuevoVehiculo.Disponible)" />
                 </div>
 
                 <div class="mb-3">
@@ -95,7 +94,7 @@
                         </span>
                         <InputText id="imagen" @bind-Value="nuevoVehiculo.Imagen" class="form-control" style="border: 1px solid #3F88C5;" />
                     </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.Imagen)" />
+                    <ValidationMessage For="@(() => nuevoVehiculo.Imagen)" />
                 </div>
 
                 <div class="mb-3">
@@ -108,7 +107,7 @@
                         </span>
                         <InputText id="combustible" @bind-Value="nuevoVehiculo.Combustible" class="form-control" style="border: 1px solid #3F88C5;" />
                     </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.Combustible)" />
+                    <ValidationMessage For="@(() => nuevoVehiculo.Combustible)" />
                 </div>
 
                 <div class="mb-3">
@@ -121,7 +120,7 @@
                         </span>
                         <InputText id="tipoTransmision" @bind-Value="nuevoVehiculo.TipoTransmision" class="form-control" style="border: 1px solid #3F88C5;" />
                     </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.TipoTransmision)" />
+                    <ValidationMessage For="@(() => nuevoVehiculo.TipoTransmision)" />
                 </div>
 
                 <div class="mb-3">
@@ -148,16 +147,26 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public int VehiculoId { get; set; } 
     private Vehiculo nuevoVehiculo { get; set; } = new Vehiculo();
 
-    private async Task GuardarVehiculo()
+    public async Task GuardarVehiculo()
     {
-        var exito = await VehiculosService.AgregarVehiculo(nuevoVehiculo);
-        if (exito)
+        try
         {
-            NavigationManager.NavigateTo("/vehiculos");
+            var exito = await VehiculosService.AgregarVehiculo(nuevoVehiculo);
+            if (exito)
+            {
+                ToastService.ShowSuccess("Vehículo agregado exitosamente.");
+                NavigationManager.NavigateTo("/vehiculos");
+            }
+            else
+            {
+                ToastService.ShowError("Error al agregar el vehículo.");
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error: {ex.Message}");
         }
     }
 }
