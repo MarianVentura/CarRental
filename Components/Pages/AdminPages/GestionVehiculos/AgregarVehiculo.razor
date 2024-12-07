@@ -148,7 +148,9 @@
 </EditForm>
 
 @code {
-    private Vehiculo nuevoVehiculo = new Vehiculo();
+    [Parameter]
+    public int VehiculoId { get; set; } 
+    private Vehiculo nuevoVehiculo { get; set; } = new Vehiculo();
 
     private async Task GuardarVehiculo()
     {
