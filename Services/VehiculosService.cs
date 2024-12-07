@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CarRental.Models;
 using CarRental.Data;
 using BlazorBootstrap;
 using CarRental.Extensors;
-using CarRental.Models;
-
 
 namespace CarRental.Services;
 
 public class VehiculosService
 {
     private readonly IDbContextFactory<Contexto> _dbFactory;
-    private readonly ToastService _toastService; 
+    private readonly ToastService _toastService;
 
     public VehiculosService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
     {
@@ -21,27 +20,31 @@ public class VehiculosService
     // Obtener todos los vehículos
     public async Task<List<Vehiculo>> ListaVehiculos()
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
-            .AsNoTracking()
-            .ToListAsync();
+        try
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Vehiculos.AsNoTracking().ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al obtener vehículos: {ex.Message}");
+            return new List<Vehiculo>();
+        }
     }
 
-    // Obtener un vehículo por su ID
+    // Obtener un vehículo por ID
     public async Task<Vehiculo?> ObtenerVehiculoPorId(int id)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        var vehiculo = await contexto.Vehiculos
-            .AsNoTracking()
-            .FirstOrDefaultAsync(v => v.VehiculoId == id);
-
-        if (vehiculo == null)
+        try
         {
-            _toastService.ShowError($"El vehículo con ID {id} no fue encontrado.");
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Vehiculos.AsNoTracking().FirstOrDefaultAsync(v => v.VehiculoId == id);
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al obtener el vehículo: {ex.Message}");
             return null;
         }
-
-        return vehiculo;
     }
 
     // Agregar un nuevo vehículo
@@ -53,18 +56,19 @@ public class VehiculosService
             return false;
         }
 
-        if (vehiculo.PrecioPorDia <= 0)
+        try
         {
-            _toastService.ShowError("El precio por día debe ser mayor a cero.");
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            contexto.Vehiculos.Add(vehiculo);
+            await contexto.SaveChangesAsync();
+            _toastService.ShowSuccess("Vehículo agregado exitosamente.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al agregar el vehículo: {ex.Message}");
             return false;
         }
-
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        contexto.Vehiculos.Add(vehiculo);
-        await contexto.SaveChangesAsync();
-
-        _toastService.ShowSuccess("Vehículo agregado exitosamente.");
-        return true;
     }
 
     // Actualizar un vehículo existente
@@ -76,88 +80,132 @@ public class VehiculosService
             return false;
         }
 
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        var vehiculoExistente = await contexto.Vehiculos.FindAsync(vehiculo.VehiculoId);
-
-        if (vehiculoExistente == null)
+        try
         {
-            _toastService.ShowError($"El vehículo con ID {vehiculo.VehiculoId} no fue encontrado.");
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            var vehiculoExistente = await contexto.Vehiculos.FindAsync(vehiculo.VehiculoId);
+
+            if (vehiculoExistente == null)
+            {
+                _toastService.ShowError($"El vehículo con ID {vehiculo.VehiculoId} no fue encontrado.");
+                return false;
+            }
+
+            // Actualizar propiedades
+            vehiculoExistente.Marca = vehiculo.Marca;
+            vehiculoExistente.Modelo = vehiculo.Modelo;
+            vehiculoExistente.Año = vehiculo.Año;
+            vehiculoExistente.PrecioPorDia = vehiculo.PrecioPorDia;
+            vehiculoExistente.Disponible = vehiculo.Disponible;
+            vehiculoExistente.Imagen = vehiculo.Imagen;
+            vehiculoExistente.Combustible = vehiculo.Combustible;
+            vehiculoExistente.TipoTransmision = vehiculo.TipoTransmision;
+            vehiculoExistente.Color = vehiculo.Color;
+
+            contexto.Vehiculos.Update(vehiculoExistente);
+            await contexto.SaveChangesAsync();
+            _toastService.ShowSuccess("Vehículo actualizado exitosamente.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al actualizar el vehículo: {ex.Message}");
             return false;
         }
-
-        vehiculoExistente.Marca = vehiculo.Marca;
-        vehiculoExistente.Modelo = vehiculo.Modelo;
-        vehiculoExistente.Año = vehiculo.Año;
-        vehiculoExistente.PrecioPorDia = vehiculo.PrecioPorDia;
-        vehiculoExistente.Disponible = vehiculo.Disponible;
-        vehiculoExistente.Imagen = vehiculo.Imagen;
-        vehiculoExistente.Combustible = vehiculo.Combustible;
-        vehiculoExistente.Transmision = vehiculo.Transmision;
-        vehiculoExistente.Color = vehiculo.Color;
-
-        contexto.Vehiculos.Update(vehiculoExistente);
-        await contexto.SaveChangesAsync();
-
-        _toastService.ShowSuccess("Vehículo actualizado exitosamente.");
-        return true;
     }
 
     // Eliminar un vehículo por ID
     public async Task<bool> EliminarVehiculo(int vehiculoId)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        var vehiculo = await contexto.Vehiculos.FindAsync(vehiculoId);
-
-        if (vehiculo == null)
+        try
         {
-            _toastService.ShowError($"El vehículo con ID {vehiculoId} no fue encontrado.");
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            var vehiculo = await contexto.Vehiculos.FindAsync(vehiculoId);
+
+            if (vehiculo == null)
+            {
+                _toastService.ShowError($"El vehículo con ID {vehiculoId} no fue encontrado.");
+                return false;
+            }
+
+            contexto.Vehiculos.Remove(vehiculo);
+            await contexto.SaveChangesAsync();
+            _toastService.ShowSuccess("Vehículo eliminado exitosamente.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al eliminar el vehículo: {ex.Message}");
             return false;
         }
-
-        contexto.Vehiculos.Remove(vehiculo);
-        await contexto.SaveChangesAsync();
-
-        _toastService.ShowSuccess("Vehículo eliminado exitosamente.");
-        return true;
     }
 
     // Obtener vehículos disponibles
     public async Task<List<Vehiculo>> ObtenerVehiculosDisponibles()
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
-            .Where(v => v.Disponible)
-            .AsNoTracking()
-            .ToListAsync();
+        try
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Vehiculos
+                .Where(v => v.Disponible)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al obtener vehículos disponibles: {ex.Message}");
+            return new List<Vehiculo>();
+        }
     }
 
     // Buscar vehículos por marca
     public async Task<List<Vehiculo>> BuscarVehiculosPorMarca(string marca)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
-            .Where(v => v.Marca.Contains(marca))
-            .AsNoTracking()
-            .ToListAsync();
+        if (string.IsNullOrWhiteSpace(marca))
+        {
+            _toastService.ShowWarning("La marca no puede estar vacía.");
+            return new List<Vehiculo>();
+        }
+
+        try
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Vehiculos
+                .Where(v => v.Marca.Contains(marca))
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al buscar vehículos: {ex.Message}");
+            return new List<Vehiculo>();
+        }
     }
 
     // Actualizar disponibilidad de un vehículo
     public async Task<bool> ActualizarDisponibilidad(int vehiculoId, bool disponible)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        var vehiculo = await contexto.Vehiculos.FindAsync(vehiculoId);
-
-        if (vehiculo == null)
+        try
         {
-            _toastService.ShowError($"El vehículo con ID {vehiculoId} no fue encontrado.");
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            var vehiculo = await contexto.Vehiculos.FindAsync(vehiculoId);
+
+            if (vehiculo == null)
+            {
+                _toastService.ShowError($"El vehículo con ID {vehiculoId} no fue encontrado.");
+                return false;
+            }
+
+            vehiculo.Disponible = disponible;
+            contexto.Vehiculos.Update(vehiculo);
+            await contexto.SaveChangesAsync();
+            _toastService.ShowSuccess("Disponibilidad actualizada exitosamente.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError($"Error al actualizar disponibilidad: {ex.Message}");
             return false;
         }
-
-        vehiculo.Disponible = disponible;
-        contexto.Vehiculos.Update(vehiculo);
-        await contexto.SaveChangesAsync();
-
-        _toastService.ShowSuccess("Disponibilidad del vehículo actualizada.");
-        return true;
     }
 }

@@ -3,13 +3,14 @@ using CarRental.Data;
 using CarRental.Models;
 using BlazorBootstrap;
 using CarRental.Extensors;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarRental.Services;
 
 public class MantenimientoVehiculoService
 {
     private readonly IDbContextFactory<Contexto> _dbFactory;
-    private readonly ToastService _toastService; 
+    private readonly ToastService _toastService;
 
     public MantenimientoVehiculoService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
     {
@@ -39,7 +40,6 @@ public class MantenimientoVehiculoService
         if (mantenimiento == null)
         {
             _toastService.ShowError($"El mantenimiento con ID {id} no fue encontrado.");
-            return null;
         }
 
         return mantenimiento;
@@ -48,27 +48,10 @@ public class MantenimientoVehiculoService
     // Agregar un nuevo mantenimiento de vehículo
     public async Task<bool> AgregarMantenimiento(MantenimientoVehiculo mantenimiento)
     {
-        if (mantenimiento == null)
+        var errores = ValidarMantenimiento(mantenimiento);
+        if (errores.Any())
         {
-            _toastService.ShowError("El mantenimiento no puede ser nulo.");
-            return false;
-        }
-
-        if (mantenimiento.Costo <= 0)
-        {
-            _toastService.ShowError("El costo debe ser un valor mayor a cero.");
-            return false;
-        }
-
-        if (mantenimiento.FechaMantenimiento == default)
-        {
-            _toastService.ShowError("La fecha de mantenimiento es obligatoria.");
-            return false;
-        }
-
-        if (string.IsNullOrEmpty(mantenimiento.Descripcion))
-        {
-            _toastService.ShowError("La descripción es obligatoria.");
+            MostrarErrores(errores);
             return false;
         }
 
@@ -83,27 +66,10 @@ public class MantenimientoVehiculoService
     // Actualizar un mantenimiento de vehículo existente
     public async Task<bool> ActualizarMantenimiento(MantenimientoVehiculo mantenimiento)
     {
-        if (mantenimiento == null)
+        var errores = ValidarMantenimiento(mantenimiento);
+        if (errores.Any())
         {
-            _toastService.ShowError("El mantenimiento no puede ser nulo.");
-            return false;
-        }
-
-        if (mantenimiento.Costo <= 0)
-        {
-            _toastService.ShowError("El costo debe ser un valor mayor a cero.");
-            return false;
-        }
-
-        if (mantenimiento.FechaMantenimiento == default)
-        {
-            _toastService.ShowError("La fecha de mantenimiento es obligatoria.");
-            return false;
-        }
-
-        if (string.IsNullOrEmpty(mantenimiento.Descripcion))
-        {
-            _toastService.ShowError("La descripción es obligatoria.");
+            MostrarErrores(errores);
             return false;
         }
 
@@ -169,5 +135,24 @@ public class MantenimientoVehiculoService
             .Include(m => m.Vehiculo)
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    // Validar un mantenimiento de vehículo
+    private List<string> ValidarMantenimiento(MantenimientoVehiculo mantenimiento)
+    {
+        var context = new ValidationContext(mantenimiento);
+        var results = new List<ValidationResult>();
+        Validator.TryValidateObject(mantenimiento, context, results, true);
+
+        return results.Select(r => r.ErrorMessage).ToList();
+    }
+
+    // Mostrar errores en los mensajes Toast
+    private void MostrarErrores(IEnumerable<string> errores)
+    {
+        foreach (var error in errores)
+        {
+            _toastService.ShowError(error);
+        }
     }
 }

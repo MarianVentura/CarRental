@@ -3,13 +3,14 @@ using CarRental.Data;
 using CarRental.Models;
 using BlazorBootstrap;
 using CarRental.Extensors;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarRental.Services
 {
     public class MetodoPagoService
     {
         private readonly IDbContextFactory<Contexto> _dbFactory;
-        private readonly ToastService _toastService; 
+        private readonly ToastService _toastService;
 
         public MetodoPagoService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
         {
@@ -45,8 +46,8 @@ namespace CarRental.Services
             return metodoPago;
         }
 
-        // Agregar un nuevo método de pago
-        public async Task<bool> AgregarMetodoPago(MetodoPago metodoPago)
+        // Validar un método de pago
+        private bool ValidarMetodoPago(MetodoPago metodoPago)
         {
             if (metodoPago == null)
             {
@@ -54,17 +55,24 @@ namespace CarRental.Services
                 return false;
             }
 
-            if (metodoPago.Monto <= 0)
+            var context = new ValidationContext(metodoPago, null, null);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(metodoPago, context, validationResults, true))
             {
-                _toastService.ShowError("El monto debe ser mayor a cero.");
+                foreach (var error in validationResults)
+                {
+                    _toastService.ShowError(error.ErrorMessage ?? "Error desconocido.");
+                }
                 return false;
             }
 
-            if (metodoPago.FechaTransaccion == default)
-            {
-                _toastService.ShowError("La fecha de transacción es obligatoria.");
-                return false;
-            }
+            return true;
+        }
+
+        // Agregar un nuevo método de pago
+        public async Task<bool> AgregarMetodoPago(MetodoPago metodoPago)
+        {
+            if (!ValidarMetodoPago(metodoPago)) return false;
 
             await using var contexto = await _dbFactory.CreateDbContextAsync();
             contexto.MetodosPago.Add(metodoPago);
@@ -77,17 +85,7 @@ namespace CarRental.Services
         // Actualizar un método de pago existente
         public async Task<bool> ActualizarMetodoPago(MetodoPago metodoPago)
         {
-            if (metodoPago == null)
-            {
-                _toastService.ShowError("El método de pago no puede ser nulo.");
-                return false;
-            }
-
-            if (metodoPago.Monto <= 0)
-            {
-                _toastService.ShowError("El monto debe ser mayor a cero.");
-                return false;
-            }
+            if (!ValidarMetodoPago(metodoPago)) return false;
 
             await using var contexto = await _dbFactory.CreateDbContextAsync();
             var metodoPagoExistente = await contexto.MetodosPago.FindAsync(metodoPago.MetodoPagoId);
@@ -147,7 +145,7 @@ namespace CarRental.Services
         {
             await using var contexto = await _dbFactory.CreateDbContextAsync();
             return await contexto.MetodosPago
-                .Where(m => m.EstadoTransaccion == MetodoPago.TransaccionEstado.Pendiente)
+                .Where(m => m.EstadoTransaccion == "Pendiente")
                 .Include(m => m.Reserva)
                 .AsNoTracking()
                 .ToListAsync();

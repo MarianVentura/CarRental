@@ -2,6 +2,7 @@
 using CarRental.Data;
 using CarRental.Models;
 using BlazorBootstrap;
+using System.Linq;
 using CarRental.Extensors;
 
 namespace CarRental.Services
@@ -9,7 +10,7 @@ namespace CarRental.Services
     public class ReservasService
     {
         private readonly IDbContextFactory<Contexto> _dbFactory;
-        private readonly ToastService _toastService; 
+        private readonly ToastService _toastService;
 
         public ReservasService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
         {
@@ -56,6 +57,7 @@ namespace CarRental.Services
                 return false;
             }
 
+            // Validaciones de negocio
             if (reserva.FechaRecogida >= reserva.FechaDevolucion)
             {
                 _toastService.ShowError("La fecha de recogida debe ser anterior a la fecha de devolución.");
@@ -69,6 +71,23 @@ namespace CarRental.Services
             }
 
             await using var contexto = await _dbFactory.CreateDbContextAsync();
+
+            // Validar existencia de Cliente y Vehículo
+            var clienteExiste = await contexto.Clientes.AnyAsync(c => c.ClienteId == reserva.ClienteId);
+            var vehiculoExiste = await contexto.Vehiculos.AnyAsync(v => v.VehiculoId == reserva.VehiculoId);
+
+            if (!clienteExiste)
+            {
+                _toastService.ShowError("El cliente seleccionado no existe.");
+                return false;
+            }
+
+            if (!vehiculoExiste)
+            {
+                _toastService.ShowError("El vehículo seleccionado no existe.");
+                return false;
+            }
+
             contexto.Reservas.Add(reserva);
             await contexto.SaveChangesAsync();
 
@@ -94,7 +113,20 @@ namespace CarRental.Services
                 return false;
             }
 
-            // Actualizar las propiedades de la reserva
+            // Validaciones
+            if (reserva.FechaRecogida >= reserva.FechaDevolucion)
+            {
+                _toastService.ShowError("La fecha de recogida debe ser anterior a la fecha de devolución.");
+                return false;
+            }
+
+            if (reserva.TotalPrecio <= 0)
+            {
+                _toastService.ShowError("El precio total debe ser mayor a cero.");
+                return false;
+            }
+
+            // Actualizar las propiedades
             reservaExistente.ClienteId = reserva.ClienteId;
             reservaExistente.VehiculoId = reserva.VehiculoId;
             reservaExistente.FechaRecogida = reserva.FechaRecogida;
@@ -129,7 +161,7 @@ namespace CarRental.Services
         }
 
         // Cambiar el estado de la reserva
-        public async Task<bool> CambiarEstadoReserva(int reservaId, Reserva.EstadoReserva nuevoEstado)
+        public async Task<bool> CambiarEstadoReserva(int reservaId, string nuevoEstado)
         {
             await using var contexto = await _dbFactory.CreateDbContextAsync();
             var reserva = await contexto.Reservas.FindAsync(reservaId);
@@ -165,7 +197,7 @@ namespace CarRental.Services
         {
             await using var contexto = await _dbFactory.CreateDbContextAsync();
             return await contexto.Reservas
-                .Where(r => r.Estado == Reserva.EstadoReserva.Pendiente)
+                .Where(r => r.Estado == "Pendiente")
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
                 .AsNoTracking()
