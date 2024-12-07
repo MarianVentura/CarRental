@@ -1,0 +1,106 @@
+﻿@page "/vehiculos/create"
+@using CarRental.Models
+@inject VehiculosService VehiculosService
+@inject ToastService ToastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Agregar Vehículo</PageTitle>
+
+<div class="container mt-4">
+    <h3>Agregar Nuevo Vehículo</h3>
+
+    <EditForm Model="@nuevoVehiculo" OnValidSubmit="GuardarVehiculo" FormName="AgregarVehiculoForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="marca">Marca:</label>
+                <InputText id="marca" @bind-Value="nuevoVehiculo.Marca" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="modelo">Modelo:</label>
+                <InputText id="modelo" @bind-Value="nuevoVehiculo.Modelo" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="anio">Año:</label>
+                <InputNumber id="anio" @bind-Value="nuevoVehiculo.Año" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="precioPorDia">Precio por Día:</label>
+                <InputNumber id="precioPorDia" @bind-Value="nuevoVehiculo.PrecioPorDia" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="color">Color:</label>
+                <InputText id="color" @bind-Value="nuevoVehiculo.Color" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="transmision">Transmisión:</label>
+                <InputSelect id="transmision" @bind-Value="nuevoVehiculo.Transmision" class="form-control">
+                    @foreach (Vehiculo.TipoTransmision transmision in Enum.GetValues(typeof(Vehiculo.TipoTransmision)))
+                    {
+                        <option value="@transmision">@transmision</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="combustible">Combustible:</label>
+                <InputSelect id="combustible" @bind-Value="nuevoVehiculo.Combustible" class="form-control">
+                    @foreach (Vehiculo.TipoCombustible combustible in Enum.GetValues(typeof(Vehiculo.TipoCombustible)))
+                    {
+                        <option value="@combustible">@combustible</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="imagen">URL de la Imagen:</label>
+            <InputText id="imagen" @bind-Value="nuevoVehiculo.Imagen" class="form-control" @oninput="ActualizarPrevisualizacion" />
+        </div>
+
+        <div class="mb-3 text-center">
+            @if (!string.IsNullOrEmpty(previsualizacionImagen))
+            {
+                <img src="@previsualizacionImagen" alt="Previsualización del Vehículo" class="img-fluid rounded" style="max-height: 200px;" />
+            }
+        </div>
+
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+</div>
+
+@code {
+    private Vehiculo nuevoVehiculo = new Vehiculo();
+    private string? previsualizacionImagen;
+
+    private async Task GuardarVehiculo()
+    {
+        var exito = await VehiculosService.AgregarVehiculo(nuevoVehiculo);
+        if (exito)
+        {
+            ToastService.ShowSuccess("Vehículo agregado correctamente.");
+            NavigationManager.NavigateTo("/vehiculos"); // Redirigir a la lista de vehículos
+        }
+        else
+        {
+            ToastService.ShowError("Error al agregar el vehículo. Intenta nuevamente.");
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/vehiculos");
+    }
+
+    private void ActualizarPrevisualizacion(ChangeEventArgs e)
+    {
+        previsualizacionImagen = nuevoVehiculo.Imagen;
+    }
+}
