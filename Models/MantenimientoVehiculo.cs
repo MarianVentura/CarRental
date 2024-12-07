@@ -13,7 +13,7 @@ public class MantenimientoVehiculo
     [Required(ErrorMessage = "El vehículo es obligatorio.")]
     [ForeignKey("Vehiculo")]
     public int VehiculoId { get; set; }
-    public Vehiculo Vehiculo { get; set; }
+    public virtual Vehiculo Vehiculo { get; set; }
 
     [Required(ErrorMessage = "La fecha de mantenimiento es obligatoria.")]
     [DataType(DataType.Date)]
