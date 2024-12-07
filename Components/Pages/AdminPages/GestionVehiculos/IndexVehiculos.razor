@@ -1,0 +1,170 @@
+﻿@page "/Admin/vehiculos"
+@using BlazorBootstrap
+@using CarRental.Extensors
+@inject VehiculosService VehiculosService
+@inject ToastService ToastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Gestión de Vehículos</PageTitle>
+
+<style>
+    .titulo {
+        font-size: 2.5rem;
+        color: #1C3144;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+        background-color: #FFF;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #1C3144;
+    }
+
+    .card-text {
+        font-size: 0.95rem;
+        color: #3F88C5;
+    }
+
+    .btn-primary {
+        background-color: #FFBA08;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #D00000;
+        }
+
+    .badge-success {
+        background-color: #3F88C5;
+    }
+
+    .badge-danger {
+        background-color: #D00000;
+    }
+</style>
+
+<div class="container mt-5">
+    <h1 class="titulo">Gestión de Vehículos</h1>
+
+    <div class="row justify-content-between mb-4">
+        <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Buscar..." @bind="busqueda" @oninput="AplicarFiltro" />
+        </div>
+        <div class="col-md-3">
+            <select @bind="filtro" class="form-control">
+                <option value="" disabled selected>Filtrar por:</option>
+                <option value="marca">Marca</option>
+                <option value="modelo">Modelo</option>
+                <option value="disponibilidad">Disponibilidad</option>
+                <option value="color">Color</option>
+                <option value="año">Año</option>
+            </select>
+        </div>
+        <div class="col-md-3 text-end">
+            <a href="/agregar-vehiculo" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Agregar Vehículo
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var vehiculo in vehiculosFiltrados)
+        {
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <img src="@vehiculo.Imagen" class="card-img-top" alt="@vehiculo.Marca" />
+                    <div class="card-body">
+                        <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo</h5>
+                        <p class="card-text">Año: @vehiculo.Año</p>
+                        <p class="card-text">Precio/Día: @vehiculo.PrecioPorDia.ToString("C")</p>
+                        <span class="badge @(vehiculo.Disponible ? "badge-success" : "badge-danger")">
+                            @(vehiculo.Disponible ? "Disponible" : "No Disponible")
+                        </span>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="/Vehiculos/Details/@vehiculo.VehiculoId" class="btn btn-primary me-2" title="Ver detalles">
+                            <i class="bi bi-info-circle"></i> Detalles
+                        </a>
+                        <button class="btn btn-danger" @onclick="() => EliminarVehiculo(vehiculo.VehiculoId)">
+                            <i class="bi bi-trash3"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Vehiculo> vehiculos = new();
+    private List<Vehiculo> vehiculosFiltrados = new();
+    private string filtro = string.Empty;
+    private string busqueda = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        vehiculos = await VehiculosService.ListaVehiculos();
+        AplicarFiltro();
+    }
+
+    private void AplicarFiltro()
+    {
+        vehiculosFiltrados = vehiculos.Where(v =>
+            (string.IsNullOrEmpty(busqueda) ||
+                (filtro == "marca" && v.Marca.Contains(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "modelo" && v.Modelo.Contains(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "disponibilidad" && v.Disponible.ToString().Equals(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "color" && v.Color.Contains(busqueda, StringComparison.OrdinalIgnoreCase)) ||
+                (filtro == "año" && v.Año.ToString().Contains(busqueda, StringComparison.OrdinalIgnoreCase)))
+        ).ToList();
+    }
+
+    private async Task EliminarVehiculo(int vehiculoId)
+    {
+        if (await VehiculosService.EliminarVehiculo(vehiculoId))
+        {
+            ToastService.ShowSuccess("Vehículo eliminado correctamente.");
+            vehiculos.RemoveAll(v => v.VehiculoId == vehiculoId);
+            AplicarFiltro();
+        }
+        else
+        {
+            ToastService.ShowError("Error al eliminar el vehículo.");
+        }
+    }
+}
