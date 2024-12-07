@@ -156,7 +156,14 @@
 
     private async Task EliminarVehiculo(int vehiculoId)
     {
-        if (await VehiculosService.EliminarVehiculo(vehiculoId))
+        var vehiculo = vehiculos.FirstOrDefault(v => v.VehiculoId == vehiculoId);
+        if (vehiculo == null)
+        {
+            ToastService.ShowError("Vehículo no encontrado.");
+            return;
+        }
+
+        if (await VehiculosService.EliminarVehiculo(vehiculo))
         {
             ToastService.ShowSuccess("Vehículo eliminado correctamente.");
             vehiculos.RemoveAll(v => v.VehiculoId == vehiculoId);
