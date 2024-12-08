@@ -19,7 +19,6 @@ public class MantenimientoVehiculo
     public DateTime FechaMantenimiento { get; set; }
 
     [Required(ErrorMessage = "La descripción es obligatoria.")]
-    [RegularExpression(@"^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s,.]+$", ErrorMessage = "La descripción solo puede contener letras, números, espacios y caracteres básicos.")]
     public string? Descripcion { get; set; }
 
     [Required(ErrorMessage = "El costo es obligatorio.")]
