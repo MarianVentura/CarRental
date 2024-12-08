@@ -19,14 +19,14 @@
     <!-- Botones CTA -->
     <div class="cta-buttons mt-4">
         <NavLink class="btn btn-secondary btn-lg ms-3" style="background-color: #ffba08; border-color: #ffba08; font-size: 1.2rem;" href="/catalogo">
-            Ver Vehículos Disponibles 
+            Ver Vehículos Disponibles
         </NavLink>
 
         <!-- Enlace al inicio de sesión -->
         <NavLink class="btn btn-secondary btn-lg ms-3" style="background-color: #3f88c5; border-color: #3f88c5; font-size: 1.2rem;" href="/Account/Login">
             Iniciar Sesión
-        </NavLink> 
-        
+        </NavLink>
+
         <NavLink class="btn btn-secondary btn-lg ms-3" style="background-color: #3f88c5; border-color: #3f88c5; font-size: 1.2rem;" href="/agregar-vehiculo">
             Agregar Vehiculo
         </NavLink>
@@ -61,7 +61,7 @@
     </div>
 </div>
 
-<!-- Opcional: Testimonios de clientes -->
+<!--Testimonios de clientes -->
 <div class="testimonials-section text-center mt-5">
     <h3 style="color: #1c3144;">Lo que dicen nuestros clientes</h3>
     <div class="row justify-content-center mt-4">
@@ -84,8 +84,28 @@
 <div class="contact-section text-center mt-5">
     <h3 style="color: #1c3144;">¿Tienes alguna pregunta?</h3>
     <p style="font-size: 1.2rem; color: #3f88c5;">Contáctanos y te ayudaremos con tu alquiler.</p>
-    <button class="btn btn-info btn-lg" style="background-color: #3f88c5; border-color: #3f88c5; font-size: 1.2rem;">Contactar Soporte</button>
+    <NavLink class="btn btn-info btn-lg"
+             style="background-color: #3f88c5; border-color: #3f88c5; font-size: 1.2rem;"
+             href="/contact">
+        Contactar Soporte
+    </NavLink>
 </div>
+
+
+
+@code {
+    [Inject] private NavigationManager Navigation { get; set; }
+
+    private void NavigateToContact()
+    {
+        Navigation.NavigateTo("/contact");
+    }
+    }
+
+
+
+
+
 
 <style>
     /* Sección Hero */
@@ -121,4 +141,3 @@
         margin-top: 20px;
     }
 </style>
- 
