@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace CarRental.Migrations
 {
     /// <inheritdoc />
@@ -30,6 +32,9 @@ namespace CarRental.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -56,15 +61,28 @@ namespace CarRental.Migrations
                 {
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombres = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Identificacion = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Identificacion = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clientes", x => x.ClienteId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EstadoReservas",
+                columns: table => new
+                {
+                    EstadoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EstadoName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EstadoReservas", x => x.EstadoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -213,7 +231,7 @@ namespace CarRental.Migrations
                         column: x => x.VehiculoId,
                         principalTable: "Vehiculos",
                         principalColumn: "VehiculoId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -243,7 +261,7 @@ namespace CarRental.Migrations
                         column: x => x.VehiculoId,
                         principalTable: "Vehiculos",
                         principalColumn: "VehiculoId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -268,6 +286,16 @@ namespace CarRental.Migrations
                         principalTable: "Reservas",
                         principalColumn: "ReservaId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "EstadoReservas",
+                columns: new[] { "EstadoId", "EstadoName" },
+                values: new object[,]
+                {
+                    { 1, "Pendiente" },
+                    { 2, "Confirmada" },
+                    { 3, "Cancelada" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -347,6 +375,9 @@ namespace CarRental.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "EstadoReservas");
 
             migrationBuilder.DropTable(
                 name: "MantenimientosVehiculo");
