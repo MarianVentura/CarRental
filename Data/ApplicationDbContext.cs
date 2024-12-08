@@ -13,30 +13,44 @@ namespace CarRental.Data
         public DbSet<Reserva> Reservas { get; set; }
         public DbSet<MetodoPago> MetodosPago { get; set; }
         public DbSet<MantenimientoVehiculo> MantenimientosVehiculo { get; set; }
+        public DbSet<EstadoReservas> EstadoReservas { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuración para Vehículo
-            modelBuilder.Entity<Vehiculo>()
-                .Property(v => v.PrecioPorDia)
-                .HasColumnType("decimal(18,2)");
-        
-            // Configuración para MantenimientoVehiculo
-            modelBuilder.Entity<MantenimientoVehiculo>()
-                .Property(m => m.Costo)
-                .HasColumnType("decimal(18,2)");
-
+            // Configuración de relaciones
+            modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Cliente)
+                .WithMany()
+                .HasForeignKey(r => r.ClienteId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Reserva>()
-            .Property(r => r.TotalPrecio)
-            .HasColumnType("decimal(18,2)");
+                .HasOne(r => r.Vehiculo)
+                .WithMany()
+                .HasForeignKey(r => r.VehiculoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuración para MetodoPago
             modelBuilder.Entity<MetodoPago>()
-                .Property(m => m.Monto)
-                .HasColumnType("decimal(18,2)");
+                .HasOne(mp => mp.Reserva)
+                .WithMany()
+                .HasForeignKey(mp => mp.ReservaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MantenimientoVehiculo>()
+                .HasOne(mv => mv.Vehiculo)
+                .WithMany()
+                .HasForeignKey(mv => mv.VehiculoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<EstadoReservas>().HasData(
+               new EstadoReservas { EstadoId = 1, EstadoName = "Pendiente" },
+               new EstadoReservas { EstadoId = 2, EstadoName = "Confirmada" },
+               new EstadoReservas { EstadoId = 3, EstadoName = "Cancelada" }
+           );
         }
     }
 }

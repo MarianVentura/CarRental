@@ -2,9 +2,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CarRental.Data
 {
-    // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        public string? Nombres { get; set; }
+
+        public string? Cedula { get; set; }
+
+        public string? NickName { get; set; }
     }
 
 }
