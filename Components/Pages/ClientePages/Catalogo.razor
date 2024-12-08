@@ -1,0 +1,80 @@
+﻿@page "/catalogo"
+@using CarRental.Models
+@using CarRental.Services
+@inject VehiculosService VehiculosService
+@inject NavigationManager Navigation
+
+<PageTitle>Catálogo de Vehículos</PageTitle>
+
+<h1>Catálogo de Vehículos</h1>
+
+@if (vehiculos == null)
+{
+    <p>Cargando vehículos...</p>
+}
+else
+{
+    @if (!vehiculos.Any())
+    {
+        <p>No hay vehículos disponibles en este momento.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var vehiculo in vehiculos)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <!-- Imagen del vehículo -->
+                        <img src="@vehiculo.Imagen" class="card-img-top" alt="@vehiculo.Marca @vehiculo.Modelo" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <!-- Detalles del vehículo -->
+                            <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo</h5>
+                            <p class="card-text">
+                                <strong>Año:</strong> @vehiculo.Año<br />
+                                <strong>Transmisión:</strong> @vehiculo.TipoTransmision<br />
+                                <strong>Combustible:</strong> @vehiculo.Combustible<br />
+                                <strong>Color:</strong> @vehiculo.Color<br />
+                                <strong>Precio por Día:</strong> @vehiculo.PrecioPorDia:C
+                            </p>
+
+                            <!-- Estado de disponibilidad y botón de rentar -->
+                            @if (vehiculo.Disponible)
+                            {
+                                <button class="btn btn-primary" @onclick="() => RentarVehiculo(vehiculo)">Rentar Ahora</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" disabled>No Disponible</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+
+@code {
+    private List<Vehiculo>? vehiculos;
+
+    // Cargar los vehículos al iniciar la página
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarVehiculos();
+    }
+
+    // Método para cargar la lista de vehículos desde el servicio
+    private async Task CargarVehiculos()
+    {
+        vehiculos = await VehiculosService.ListaVehiculos();
+    }
+
+    // Método de acción para rentar un vehículo
+    private void RentarVehiculo(Vehiculo vehiculo)
+    {
+        // Aquí puedes agregar la lógica para navegar a una página de reserva o agregarlo a un carrito de renta.
+        // Ejemplo: Navigation.NavigateTo($"/reserva/{vehiculo.VehiculoId}");
+        Navigation.NavigateTo($"/reserva/{vehiculo.VehiculoId}");
+    }
+}

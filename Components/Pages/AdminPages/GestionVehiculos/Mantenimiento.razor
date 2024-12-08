@@ -1,0 +1,123 @@
+﻿@page "/mantenimiento-vehiculo"
+@inject MantenimientoVehiculoService MantenimientoService
+@inject VehiculosService VehiculosService
+@inject ToastService ToastService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Mantenimiento Vehículo</PageTitle>
+
+<EditForm Model="mantenimientoActual" OnValidSubmit="GuardarMantenimiento" FormName="NuevoMantenimiento">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container mt-5 pt-5">
+        <div class="card shadow-lg">
+            <!-- Header -->
+            <div class="card-header" style="background-color: #1C3144; color: white;">
+                <h2 class="mb-0" style="font-family: 'Poppins', sans-serif;"><strong>Registrar Mantenimiento</strong></h2>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body" style="background-color: #A2AEBB;">
+                <!-- Campos de Entrada -->
+                <div class="mb-3">
+                    <label class="form-label" for="vehiculo" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Vehículo</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-car-front"></i>
+                        </span>
+                        <InputSelect id="vehiculo" @bind-Value="mantenimientoActual.VehiculoId" class="form-control" style="border: 1px solid #3F88C5;">
+                            <option value="">Seleccione un vehículo</option>
+                            @foreach (var vehiculo in vehiculosDisponibles)
+                            {
+                                <option value="@vehiculo.VehiculoId">@vehiculo.Marca @vehiculo.Modelo (@vehiculo.Año)</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <ValidationMessage For="(() => mantenimientoActual.VehiculoId)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="fechaMantenimiento" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Fecha de Mantenimiento</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-calendar"></i>
+                        </span>
+                        <InputDate id="fechaMantenimiento" @bind-Value="mantenimientoActual.FechaMantenimiento" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => mantenimientoActual.FechaMantenimiento)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="descripcion" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Descripción</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-textarea-t"></i>
+                        </span>
+                        <InputTextArea id="descripcion" @bind-Value="mantenimientoActual.Descripcion" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => mantenimientoActual.Descripcion)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="costo" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Costo</strong>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
+                            <i class="bi bi-cash-stack"></i>
+                        </span>
+                        <InputNumber id="costo" @bind-Value="mantenimientoActual.Costo" class="form-control" style="border: 1px solid #3F88C5;" />
+                    </div>
+                    <ValidationMessage For="(() => mantenimientoActual.Costo)" />
+                </div>
+
+                <!-- Botón Guardar -->
+                <div class="mb-3 text-center">
+                    <button type="submit" class="btn" style="background-color: #FF9F1C; color: white; width: 150px; font-size: 18px;">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private MantenimientoVehiculo mantenimientoActual { get; set; } = new MantenimientoVehiculo();
+    private List<Vehiculo> vehiculosDisponibles = new List<Vehiculo>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var vehiculos = await VehiculosService.ListaVehiculos();
+    }
+
+    private async Task GuardarMantenimiento()
+    {
+        try
+        {
+            var exito = await MantenimientoService.AgregarMantenimiento(mantenimientoActual);
+
+            if (exito)
+            {
+                ToastService.ShowSuccess("Mantenimiento registrado correctamente");
+                NavigationManager.NavigateTo("/mantenimientos");
+            }
+            else
+            {
+                ToastService.ShowError("Error al registrar el mantenimiento");
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error: {ex.Message}");
+        }
+    }
+}
