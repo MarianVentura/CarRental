@@ -1,0 +1,81 @@
+﻿@page "/gestionar-reservas"
+@inject ReservasService ReservasService
+@inject NavigationManager Navigation
+
+<PageTitle>Gestionar Reservas</PageTitle>
+
+<div>
+    <h3>Reservas</h3>
+
+    <InputText @bind-Value="searchText" placeholder="Buscar por cliente..." class="form-control" />
+    <button class="btn btn-primary" @onclick="SearchReservations">Buscar</button>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Vehículo</th>
+                <th>Fecha Recogida</th>
+                <th>Fecha Devolución</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reserva in reservas)
+            {
+                <tr>
+                    <td>@reserva.Cliente.Nombres</td>
+                    <td>@reserva.Vehiculo.Marca</td>
+                    <td>@reserva.FechaRecogida.ToShortDateString()</td>
+                    <td>@reserva.FechaDevolucion.ToShortDateString()</td>
+                    <td>@reserva.TotalPrecio.ToString("C")</td>
+                    <td>@reserva.Estado</td>
+                    <td>
+                        <button class="btn btn-warning" @onclick="() => EditReserva(reserva.ReservaId)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteReserva(reserva.ReservaId)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<Reserva> reservas = new List<Reserva>();
+    private string searchText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reservas = await ReservasService.ObtenerTodasLasReservas();
+    }
+
+    private async Task SearchReservations()
+    {
+        if (string.IsNullOrEmpty(searchText))
+        {
+            reservas = await ReservasService.ObtenerTodasLasReservas();
+        }
+        else
+        {
+            // Aquí puedes implementar la búsqueda por cliente, estado, etc.
+            reservas = await ReservasService.BuscarReservasPorCliente(int.Parse(searchText)); // Ejemplo de búsqueda por ID de cliente
+        }
+    }
+
+    private async Task EditReserva(int reservaId)
+    {
+        // Navegar a la página de edición de reserva
+        Navigation.NavigateTo($"/editar-reserva/{reservaId}");
+    }
+
+    private async Task DeleteReserva(int reservaId)
+    {
+        var result = await ReservasService.EliminarReserva(reservaId);
+        if (result)
+        {
+            reservas = await ReservasService.ObtenerTodasLasReservas();
+        }
+    }
+}
