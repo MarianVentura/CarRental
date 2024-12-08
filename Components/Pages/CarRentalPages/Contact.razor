@@ -1,0 +1,67 @@
+﻿@page "/contact/{type?}"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Formulario de Contacto</PageTitle>
+
+<h2 class="text-center" style="color: #ffba08;">Formulario de Contacto</h2>
+<p class="text-center" style="font-size: 1.2rem; color: #a2aebb;">Por favor, completa los siguientes campos y elige cómo quieres enviar tu consulta.</p>
+
+<!-- Formulario de contacto -->
+<div class="container mt-4" style="max-width: 600px; background-color: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: 2px solid #a2aebb;">
+    <EditForm Model="@contactForm" OnValidSubmit="@HandleSubmit">
+        <div class="mb-3">
+            <label for="name" class="form-label" style="color: #1c3144;">Nombre</label>
+            <InputText id="name" class="form-control" @bind-Value="contactForm.Name" required style="border-color: #a2aebb;" />
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label" style="color: #1c3144;">Correo Electrónico</label>
+            <InputText id="email" type="email" class="form-control" @bind-Value="contactForm.Email" required style="border-color: #a2aebb;" />
+        </div>
+        <div class="mb-3">
+            <label for="message" class="form-label" style="color: #1c3144;">Mensaje</label>
+            <InputTextArea id="message" class="form-control" rows="5" @bind-Value="contactForm.Message" required style="border-color: #a2aebb;" />
+        </div>
+        <div class="mb-3 text-center">
+            <button type="button" class="btn btn-success btn-lg" @onclick="SendToWhatsApp" style="background-color: #25d366; border-color: #25d366; font-size: 1.1rem;">
+                <i class="bi bi-whatsapp"></i> Enviar por WhatsApp
+            </button>
+            <button type="button" class="btn btn-danger btn-lg" @onclick="SendByEmail" style="background-color: #d00000; border-color: #d00000; font-size: 1.1rem;">
+                <i class="bi bi-envelope"></i> Enviar por Correo
+            </button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    // Parámetro de ruta
+    [Parameter] public string? type { get; set; } // Propiedad para recibir el parámetro de tipo
+
+    // Modelo para el formulario
+    private ContactForm contactForm = new ContactForm();
+
+    private async Task HandleSubmit()
+    {
+        // Lógica para manejar el envío en caso de formulario general
+    }
+
+    private void SendToWhatsApp()
+    {
+        string url = $"https://wa.me/18296766122?text=Hola, soy {contactForm.Name}. Mi consulta es: {contactForm.Message}";
+        JSRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    private void SendByEmail()
+    {
+        // Usando mailto para abrir un cliente de correo
+        string mailto = $"mailto:{contactForm.Email}?subject=Consulta%20de%20{contactForm.Name}&body={Uri.EscapeDataString(contactForm.Message)}";
+        JSRuntime.InvokeVoidAsync("open", mailto, "_blank");
+    }
+
+    // Clase para el modelo
+    private class ContactForm
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+    }
+}
