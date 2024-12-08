@@ -203,5 +203,90 @@ namespace CarRental.Services
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        // Obtener todas las reservas activas
+        public async Task<List<Reserva>> ObtenerReservasActivas()
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Where(r => r.Estado == "Activa")  // Ajusta la condición de estado según tu modelo
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Obtener reservas activas por cliente
+        public async Task<List<Reserva>> ObtenerReservasActivasPorCliente(int clienteId)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Where(r => r.Estado == "Activa" && r.ClienteId == clienteId)
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Obtener reservas pendientes por cliente
+        public async Task<List<Reserva>> ObtenerReservasPendientesPorCliente(int clienteId)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Where(r => r.Estado == "Pendiente" && r.ClienteId == clienteId)
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Obtener reservas activas por vehículo
+        public async Task<List<Reserva>> ObtenerReservasActivasPorVehiculo(int vehiculoId)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Where(r => r.Estado == "Activa" && r.VehiculoId == vehiculoId)
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Obtener reservas pendientes por vehículo
+        public async Task<List<Reserva>> ObtenerReservasPendientesPorVehiculo(int vehiculoId)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Where(r => r.Estado == "Pendiente" && r.VehiculoId == vehiculoId)
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Obtener reservas pendientes por estado
+        public async Task<List<Reserva>> ObtenerReservasPendientesPorEstado(string estado)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Where(r => r.Estado == estado)
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Obtener reservas activas por estado
+        public async Task<List<Reserva>> ObtenerReservasActivasPorEstado(string estado)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Reservas
+                .Where(r => r.Estado == estado)
+                .Include(r => r.Cliente)
+                .Include(r => r.Vehiculo)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
     }
 }
