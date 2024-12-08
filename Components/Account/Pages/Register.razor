@@ -27,21 +27,49 @@
             <h2>Create a new account.</h2>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
+
+            <!-- Nombres Field -->
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.Nombres" class="form-control" aria-required="true" placeholder="Full Name" />
+                <label for="nombres">Full Name</label>
+                <ValidationMessage For="() => Input.Nombres" class="text-danger" />
+            </div>
+
+            <!-- Cedula Field -->
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.Cedula" class="form-control" aria-required="true" placeholder="Cedula Number" />
+                <label for="cedula">Cedula</label>
+                <ValidationMessage For="() => Input.Cedula" class="text-danger" />
+            </div>
+
+            <!-- Nickname Field -->
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.NickName" class="form-control" aria-required="true" placeholder="Nickname" />
+                <label for="nickname">Nickname</label>
+                <ValidationMessage For="() => Input.NickName" class="text-danger" />
+            </div>
+
+            <!-- Email Field -->
             <div class="form-floating mb-3">
                 <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label for="email">Email</label>
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
             </div>
+
+            <!-- Password Field -->
             <div class="form-floating mb-3">
                 <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label for="password">Password</label>
                 <ValidationMessage For="() => Input.Password" class="text-danger" />
             </div>
+
+            <!-- Confirm Password Field -->
             <div class="form-floating mb-3">
                 <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
+
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
     </div>
@@ -72,6 +100,9 @@
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+        user.Nombres = Input.Nombres;
+        user.Cedula = Input.Cedula;
+        user.NickName = Input.NickName;
         var result = await UserManager.CreateAsync(user, Input.Password);
 
         if (!result.Succeeded)
@@ -126,6 +157,18 @@
 
     private sealed class InputModel
     {
+        [Required]
+        [Display(Name = "Full Name")]
+        public string Nombres { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Cedula")]
+        public string Cedula { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Nickname")]
+        public string NickName { get; set; } = "";
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
