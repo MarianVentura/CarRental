@@ -11,13 +11,13 @@ public class Reserva
     [Required(ErrorMessage = "El cliente es obligatorio.")]
     [ForeignKey("Cliente")]
     public int ClienteId { get; set; }
-    public virtual Cliente Cliente { get; set; }
+    public virtual Cliente? Cliente { get; set; }
 
 
     [Required(ErrorMessage = "El vehículo es obligatorio.")]
     [ForeignKey("Vehiculo")]
     public int VehiculoId { get; set; }
-    public virtual Vehiculo Vehiculo { get; set; }
+    public virtual Vehiculo? Vehiculo { get; set; }
 
     [Required(ErrorMessage = "La fecha de recogida es obligatoria.")]
     public DateTime FechaRecogida { get; set; }
@@ -30,7 +30,7 @@ public class Reserva
     public decimal TotalPrecio { get; set; }
 
     [Required(ErrorMessage = "El estado es obligatorio.")]
-    public string Estado { get; set; }
+    public string? Estado { get; set; }
 
 
 }
