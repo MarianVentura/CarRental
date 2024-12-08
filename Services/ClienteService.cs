@@ -153,10 +153,12 @@ namespace CarRental.Services
         public async Task<List<Cliente>> ObtenerClientesPorTipoIdentificacion(string tipoIdentificacion)
         {
             await using var contexto = await _dbFactory.CreateDbContextAsync();
+
             return await contexto.Clientes
-                .Where(c => c.Identificacion == tipoIdentificacion)
+                .Where(c => c.Identificacion.ToString() == tipoIdentificacion) // Convertir Identificacion a string
                 .AsNoTracking()
                 .ToListAsync();
         }
+
     }
 }
