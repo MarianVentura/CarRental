@@ -1,10 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarRental.Models;
-
 public class Reserva
 {
+    public enum EstadoReserva
+    {
+        Pendiente,
+        Confirmada,
+        Cancelada,
+        Completada
+    }
+
     [Key]
     public int ReservaId { get; set; }
 
@@ -12,7 +19,6 @@ public class Reserva
     [ForeignKey("Cliente")]
     public int ClienteId { get; set; }
     public virtual Cliente Cliente { get; set; }
-
 
     [Required(ErrorMessage = "El vehículo es obligatorio.")]
     [ForeignKey("Vehiculo")]
@@ -30,7 +36,5 @@ public class Reserva
     public decimal TotalPrecio { get; set; }
 
     [Required(ErrorMessage = "El estado es obligatorio.")]
-    public string Estado { get; set; }
-
-
+    public EstadoReserva Estado { get; set; } // Cambiar a tipo enum EstadoReserva
 }
