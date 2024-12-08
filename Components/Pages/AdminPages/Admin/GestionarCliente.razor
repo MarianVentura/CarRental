@@ -1,0 +1,89 @@
+﻿@page "/gestionar-clientes"
+@inject ClienteService ClienteService
+@inject NavigationManager Navigation
+
+<PageTitle>Gestionar Clientes</PageTitle>
+
+<div>
+    <h3>Clientes</h3>
+
+    <!-- Formulario de búsqueda -->
+    <InputText @bind-Value="searchText" placeholder="Buscar por nombre..." class="form-control" />
+    <button class="btn btn-primary" @onclick="SearchClientes">Buscar</button>
+    <br /><br />
+
+    <!-- Tabla de clientes -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in clientes)
+            {
+                <tr>
+                    <td>@cliente.Nombres</td>
+                    <td>@cliente.Email</td>
+                    <td>@cliente.Telefono</td>
+                    <td>
+                        <button class="btn btn-warning" @onclick="() => EditCliente(cliente.ClienteId)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteCliente(cliente.ClienteId)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Botón para agregar un nuevo cliente -->
+    <button class="btn btn-success" @onclick="AddCliente">Agregar Cliente</button>
+</div>
+
+@code {
+    private List<Cliente> clientes = new List<Cliente>();
+    private string searchText;
+
+    // Cargar todos los clientes al inicio
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await ClienteService.ObtenerTodosLosClientes();
+    }
+
+    // Buscar clientes por nombre
+    private async Task SearchClientes()
+    {
+        if (string.IsNullOrEmpty(searchText))
+        {
+            clientes = await ClienteService.ObtenerTodosLosClientes();
+        }
+        else
+        {
+            clientes = await ClienteService.BuscarClientesPorNombre(searchText);
+        }
+    }
+
+    // Redirigir a la página para agregar un nuevo cliente
+    private void AddCliente()
+    {
+        Navigation.NavigateTo("/agregar-cliente");
+    }
+
+    // Redirigir a la página para editar un cliente
+    private async Task EditCliente(int clienteId)
+    {
+        Navigation.NavigateTo($"/editar-cliente/{clienteId}");
+    }
+
+    // Eliminar un cliente por ID
+    private async Task DeleteCliente(int clienteId)
+    {
+        var result = await ClienteService.EliminarCliente(clienteId);
+        if (result)
+        {
+            clientes = await ClienteService.ObtenerTodosLosClientes();
+        }
+    }
+}
