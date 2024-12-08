@@ -1,0 +1,137 @@
+﻿@page "/carousel"
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Galería de Fotos</PageTitle>
+
+<div class="container mt-4">
+    <h2 class="text-center" style="color: #1c3144;">Galería de Imágenes</h2>
+
+    <!-- Carousel de Fotos -->
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @foreach (var item in carouselItems)
+            {
+                <div class="carousel-item @(item == carouselItems[0] ? "active" : "")">
+                    <img src="@item.ImageUrl" class="d-block w-100" alt="Imagen">
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <div class="mt-4">
+        <h4>Agregar Nueva Imagen</h4>
+        <InputFile OnChange="HandleFileSelected" />
+        <button class="btn btn-success mt-2" @onclick="AddImage">Agregar Imagen</button>
+    </div>
+
+    <div class="mt-4">
+        <h4>Eliminar Imagen</h4>
+        <select class="form-select" @bind="selectedImageForDeletion">
+            <option value="">Seleccione una Imagen para Eliminar</option>
+            @foreach (var item in carouselItems)
+            {
+                <option value="@item.ImageUrl">@item.ImageUrl</option>
+            }
+        </select>
+        <button class="btn btn-danger mt-2" @onclick="DeleteImage">Eliminar Imagen</button>
+    </div>
+
+    <div class="mt-4">
+        <h4>Editar Imagen</h4>
+        <select class="form-select" @bind="selectedImageForEditing">
+            <option value="">Seleccione una Imagen para Editar</option>
+            @foreach (var item in carouselItems)
+            {
+                <option value="@item.ImageUrl">@item.ImageUrl</option>
+            }
+        </select>
+        <InputFile OnChange="HandleFileSelectedForEdit" />
+        <button class="btn btn-warning mt-2" @onclick="EditImage">Editar Imagen</button>
+    </div>
+</div>
+
+@code {
+    private List<CarouselItem> carouselItems = new List<CarouselItem>
+    {
+        new CarouselItem { ImageUrl = "https://via.placeholder.com/800x400/1c3144/ffffff?text=Imagen+1" },
+        new CarouselItem { ImageUrl = "https://via.placeholder.com/800x400/d00000/ffffff?text=Imagen+2" },
+        new CarouselItem { ImageUrl = "https://via.placeholder.com/800x400/ffba08/ffffff?text=Imagen+3" }
+    };
+
+    private string selectedImageForDeletion;
+    private string selectedImageForEditing;
+    private string newImageUrl;
+
+    // Clase para definir el item del carousel
+    public class CarouselItem
+    {
+        public string ImageUrl { get; set; }
+    }
+
+    // Método para manejar la selección de archivo
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        newImageUrl = await SaveImage(file); // Guarda la imagen en alguna ubicación y devuelve la URL
+    }
+
+    // Método para manejar la selección de archivo para edición
+    private async Task HandleFileSelectedForEdit(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        newImageUrl = await SaveImage(file); // Guarda la imagen editada y devuelve la URL
+    }
+
+    // Guardar la imagen (por ejemplo, guardarla en una carpeta local o almacenamiento en la nube)
+    private async Task<string> SaveImage(IBrowserFile file)
+    {
+        // Aquí guardamos la imagen y devolvemos la URL donde se encuentra
+        // Ejemplo: guardar en el servidor o en un contenedor en la nube y devolver la URL
+        var imageUrl = $"https://via.placeholder.com/800x400/{file.Name}";
+        return imageUrl;
+    }
+
+    // Método para agregar una nueva imagen
+    private void AddImage()
+    {
+        if (!string.IsNullOrEmpty(newImageUrl))
+        {
+            carouselItems.Add(new CarouselItem { ImageUrl = newImageUrl });
+        }
+    }
+
+    // Método para eliminar una imagen
+    private void DeleteImage()
+    {
+        if (!string.IsNullOrEmpty(selectedImageForDeletion))
+        {
+            var imageToDelete = carouselItems.FirstOrDefault(item => item.ImageUrl == selectedImageForDeletion);
+            if (imageToDelete != null)
+            {
+                carouselItems.Remove(imageToDelete);
+            }
+        }
+    }
+
+    // Método para editar una imagen
+    private void EditImage()
+    {
+        if (!string.IsNullOrEmpty(selectedImageForEditing) && !string.IsNullOrEmpty(newImageUrl))
+        {
+            var imageToEdit = carouselItems.FirstOrDefault(item => item.ImageUrl == selectedImageForEditing);
+            if (imageToEdit != null)
+            {
+                imageToEdit.ImageUrl = newImageUrl;
+            }
+        }
+    }
+}
