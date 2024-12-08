@@ -8,7 +8,6 @@
 
 <EditForm Model="nuevoVehiculo" OnValidSubmit="GuardarVehiculo" FormName="NuevoVehiculo">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
     <div class="container mt-5 pt-5">
         <div class="card shadow-lg">
@@ -33,6 +32,7 @@
                     <ValidationMessage For="(() => nuevoVehiculo.Marca)" />
                 </div>
 
+                <!-- Modelo -->
                 <div class="mb-3">
                     <label class="form-label" for="modelo" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
                         <strong>Modelo</strong>
@@ -46,6 +46,7 @@
                     <ValidationMessage For="(() => nuevoVehiculo.Modelo)" />
                 </div>
 
+                <!-- Año -->
                 <div class="mb-3">
                     <label class="form-label" for="anio" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
                         <strong>Año</strong>
@@ -59,6 +60,7 @@
                     <ValidationMessage For="(() => nuevoVehiculo.Año)" />
                 </div>
 
+                <!-- Precio Por Día -->
                 <div class="mb-3">
                     <label class="form-label" for="precioPorDia" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
                         <strong>Precio por Día</strong>
@@ -71,17 +73,41 @@
                     </div>
                     <ValidationMessage For="(() => nuevoVehiculo.PrecioPorDia)" />
                 </div>
+
+                <!-- Imagen -->
                 <div class="mb-3">
-                    <label class="form-label" for="disponible" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
-                        <strong>Disponibilidad</strong>
+                    <label class="form-label" for="imagen" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>URL Imagen</strong>
                     </label>
-                    <div class="input-group">
-                        <span class="input-group-text" style="background-color: #FFBA08; color: white;">
-                            <i class="bi bi-check-circle"></i>
-                        </span>
-                        <InputCheckbox id="disponible" @bind-Value="nuevoVehiculo.Disponible" class="form-check-input" />
-                    </div>
-                    <ValidationMessage For="(() => nuevoVehiculo.Disponible)" />
+                    <InputText id="imagen" @bind-Value="nuevoVehiculo.Imagen" class="form-control" style="border: 1px solid #3F88C5;" />
+                    <ValidationMessage For="(() => nuevoVehiculo.Imagen)" />
+                </div>
+
+                <!-- Combustible -->
+                <div class="mb-3">
+                    <label class="form-label" for="combustible" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Combustible</strong>
+                    </label>
+                    <InputText id="combustible" @bind-Value="nuevoVehiculo.Combustible" class="form-control" style="border: 1px solid #3F88C5;" />
+                    <ValidationMessage For="(() => nuevoVehiculo.Combustible)" />
+                </div>
+
+                <!-- Tipo de Transmisión -->
+                <div class="mb-3">
+                    <label class="form-label" for="transmision" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Tipo de Transmisión</strong>
+                    </label>
+                    <InputText id="transmision" @bind-Value="nuevoVehiculo.TipoTransmision" class="form-control" style="border: 1px solid #3F88C5;" />
+                    <ValidationMessage For="(() => nuevoVehiculo.TipoTransmision)" />
+                </div>
+
+                <!-- Color -->
+                <div class="mb-3">
+                    <label class="form-label" for="color" style="font-family: 'Poppins', sans-serif; color: #1C3144;">
+                        <strong>Color</strong>
+                    </label>
+                    <InputText id="color" @bind-Value="nuevoVehiculo.Color" class="form-control" style="border: 1px solid #3F88C5;" />
+                    <ValidationMessage For="(() => nuevoVehiculo.Color)" />
                 </div>
 
                 <!-- Botón Guardar -->
