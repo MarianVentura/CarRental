@@ -3,7 +3,8 @@
 @using CarRental.Services
 @inject VehiculosService VehiculosService
 @inject MetodoPagoService MetodoPagoService
-@inject NavigationManager Navigation
+@inject ReservasService ReservasService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Reserva de Vehículo</PageTitle>
 
@@ -79,29 +80,36 @@ else
         // Validar que las fechas de recogida y devolución son válidas
         if (fechaDevolucion <= fechaRecogida)
         {
-            // Mostrar un mensaje de error (puedes usar un ToastService o algún otro método)
+            ReservasService.ShowError("La fecha de devolución debe ser posterior a la fecha de recogida.");
             return;
         }
 
         // Calcular el precio total
         var totalPrecio = (fechaDevolucion - fechaRecogida).Days * vehiculo.PrecioPorDia;
 
-        // Crear la reserva
+        // Crear el objeto reserva
         var reserva = new Reserva
             {
                 VehiculoId = vehiculo.VehiculoId,
+                ClienteId = 1, // Sustituir con el cliente actual si se implementa autenticación
                 FechaRecogida = fechaRecogida,
                 FechaDevolucion = fechaDevolucion,
                 MetodoPagoId = metodoPagoId,
                 TotalPrecio = totalPrecio,
-                Estado = "Pendiente" // Puedes ajustar el estado de acuerdo a tu lógica
+                Estado = "Pendiente"
             };
 
-        // Aquí debes guardar la reserva en la base de datos (llamando al servicio correspondiente)
-        // Por ejemplo: await ReservaService.CrearReserva(reserva);
+        // Guardar la reserva
+        var resultado = await ReservasService.AgregarReserva(reserva);
 
-        // Después de realizar la reserva, puedes navegar a una página de confirmación o de inicio
-        Navigation.NavigateTo("/confirmacion");
+        if (resultado)
+        {
+            NavigationManager.NavigateTo("/confirmacion");
+        }
+        else
+        {
+            // El servicio mostrará el mensaje de error correspondiente
+        }
     }
 }
  *@
