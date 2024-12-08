@@ -9,20 +9,19 @@ namespace CarRental.Services;
 
 public class MantenimientoVehiculoService
 {
-    private readonly IDbContextFactory<Contexto> _dbFactory;
+    private readonly Contexto _contexto;
     private readonly ToastService _toastService;
 
-    public MantenimientoVehiculoService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
+    public MantenimientoVehiculoService(Contexto contexto, ToastService toastService)
     {
-        _dbFactory = dbFactory;
+        _contexto = contexto;
         _toastService = toastService;
     }
 
     // Obtener todos los mantenimientos de vehículos
     public async Task<List<MantenimientoVehiculo>> ObtenerTodosLosMantenimientos()
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.MantenimientosVehiculo
+        return await _contexto.MantenimientosVehiculo
             .Include(m => m.Vehiculo)
             .AsNoTracking()
             .ToListAsync();
@@ -31,8 +30,7 @@ public class MantenimientoVehiculoService
     // Obtener un mantenimiento de vehículo por ID
     public async Task<MantenimientoVehiculo?> ObtenerMantenimientoPorId(int id)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        var mantenimiento = await contexto.MantenimientosVehiculo
+        var mantenimiento = await _contexto.MantenimientosVehiculo
             .Include(m => m.Vehiculo)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.MantenimientoId == id);
@@ -55,9 +53,8 @@ public class MantenimientoVehiculoService
             return false;
         }
 
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        contexto.MantenimientosVehiculo.Add(mantenimiento);
-        await contexto.SaveChangesAsync();
+        _contexto.MantenimientosVehiculo.Add(mantenimiento);
+        await _contexto.SaveChangesAsync();
 
         _toastService.ShowSuccess("Mantenimiento de vehículo agregado exitosamente.");
         return true;
@@ -73,8 +70,7 @@ public class MantenimientoVehiculoService
             return false;
         }
 
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        var mantenimientoExistente = await contexto.MantenimientosVehiculo.FindAsync(mantenimiento.MantenimientoId);
+        var mantenimientoExistente = await _contexto.MantenimientosVehiculo.FindAsync(mantenimiento.MantenimientoId);
 
         if (mantenimientoExistente == null)
         {
@@ -88,8 +84,8 @@ public class MantenimientoVehiculoService
         mantenimientoExistente.Descripcion = mantenimiento.Descripcion;
         mantenimientoExistente.Costo = mantenimiento.Costo;
 
-        contexto.MantenimientosVehiculo.Update(mantenimientoExistente);
-        await contexto.SaveChangesAsync();
+        _contexto.MantenimientosVehiculo.Update(mantenimientoExistente);
+        await _contexto.SaveChangesAsync();
 
         _toastService.ShowSuccess("Mantenimiento de vehículo actualizado exitosamente.");
         return true;
@@ -98,8 +94,7 @@ public class MantenimientoVehiculoService
     // Eliminar un mantenimiento de vehículo por ID
     public async Task<bool> EliminarMantenimiento(int mantenimientoId)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        var mantenimiento = await contexto.MantenimientosVehiculo.FindAsync(mantenimientoId);
+        var mantenimiento = await _contexto.MantenimientosVehiculo.FindAsync(mantenimientoId);
 
         if (mantenimiento == null)
         {
@@ -107,8 +102,8 @@ public class MantenimientoVehiculoService
             return false;
         }
 
-        contexto.MantenimientosVehiculo.Remove(mantenimiento);
-        await contexto.SaveChangesAsync();
+        _contexto.MantenimientosVehiculo.Remove(mantenimiento);
+        await _contexto.SaveChangesAsync();
 
         _toastService.ShowSuccess("Mantenimiento de vehículo eliminado exitosamente.");
         return true;
@@ -117,8 +112,7 @@ public class MantenimientoVehiculoService
     // Buscar mantenimientos por vehículo
     public async Task<List<MantenimientoVehiculo>> BuscarMantenimientosPorVehiculo(int vehiculoId)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.MantenimientosVehiculo
+        return await _contexto.MantenimientosVehiculo
             .Where(m => m.VehiculoId == vehiculoId)
             .Include(m => m.Vehiculo)
             .AsNoTracking()
@@ -128,8 +122,7 @@ public class MantenimientoVehiculoService
     // Obtener los mantenimientos recientes (por ejemplo, los últimos 10)
     public async Task<List<MantenimientoVehiculo>> ObtenerMantenimientosRecientes(int cantidad = 10)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.MantenimientosVehiculo
+        return await _contexto.MantenimientosVehiculo
             .OrderByDescending(m => m.FechaMantenimiento)
             .Take(cantidad)
             .Include(m => m.Vehiculo)

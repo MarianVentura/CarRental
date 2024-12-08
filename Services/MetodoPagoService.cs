@@ -9,20 +9,19 @@ namespace CarRental.Services
 {
     public class MetodoPagoService
     {
-        private readonly IDbContextFactory<Contexto> _dbFactory;
+        private readonly Contexto _contexto; // Cambiado de IDbContextFactory<Contexto> a Contexto
         private readonly ToastService _toastService;
 
-        public MetodoPagoService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
+        public MetodoPagoService(Contexto contexto, ToastService toastService) // Cambiado de dbFactory a contexto
         {
-            _dbFactory = dbFactory;
+            _contexto = contexto;
             _toastService = toastService;
         }
 
         // Obtener todos los métodos de pago
         public async Task<List<MetodoPago>> ObtenerTodosLosMetodosPago()
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.MetodosPago
+            return await _contexto.MetodosPago
                 .Include(m => m.Reserva)
                 .AsNoTracking()
                 .ToListAsync();
@@ -31,8 +30,7 @@ namespace CarRental.Services
         // Obtener un método de pago por ID
         public async Task<MetodoPago?> ObtenerMetodoPagoPorId(int id)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var metodoPago = await contexto.MetodosPago
+            var metodoPago = await _contexto.MetodosPago
                 .Include(m => m.Reserva)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.MetodoPagoId == id);
@@ -74,9 +72,8 @@ namespace CarRental.Services
         {
             if (!ValidarMetodoPago(metodoPago)) return false;
 
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            contexto.MetodosPago.Add(metodoPago);
-            await contexto.SaveChangesAsync();
+            _contexto.MetodosPago.Add(metodoPago);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Método de pago agregado exitosamente.");
             return true;
@@ -87,8 +84,7 @@ namespace CarRental.Services
         {
             if (!ValidarMetodoPago(metodoPago)) return false;
 
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var metodoPagoExistente = await contexto.MetodosPago.FindAsync(metodoPago.MetodoPagoId);
+            var metodoPagoExistente = await _contexto.MetodosPago.FindAsync(metodoPago.MetodoPagoId);
 
             if (metodoPagoExistente == null)
             {
@@ -103,8 +99,8 @@ namespace CarRental.Services
             metodoPagoExistente.EstadoTransaccion = metodoPago.EstadoTransaccion;
             metodoPagoExistente.ProveedorPago = metodoPago.ProveedorPago;
 
-            contexto.MetodosPago.Update(metodoPagoExistente);
-            await contexto.SaveChangesAsync();
+            _contexto.MetodosPago.Update(metodoPagoExistente);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Método de pago actualizado exitosamente.");
             return true;
@@ -113,8 +109,7 @@ namespace CarRental.Services
         // Eliminar un método de pago por ID
         public async Task<bool> EliminarMetodoPago(int metodoPagoId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var metodoPago = await contexto.MetodosPago.FindAsync(metodoPagoId);
+            var metodoPago = await _contexto.MetodosPago.FindAsync(metodoPagoId);
 
             if (metodoPago == null)
             {
@@ -122,8 +117,8 @@ namespace CarRental.Services
                 return false;
             }
 
-            contexto.MetodosPago.Remove(metodoPago);
-            await contexto.SaveChangesAsync();
+            _contexto.MetodosPago.Remove(metodoPago);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Método de pago eliminado exitosamente.");
             return true;
@@ -132,8 +127,7 @@ namespace CarRental.Services
         // Buscar métodos de pago por reserva
         public async Task<List<MetodoPago>> BuscarMetodosPagoPorReserva(int reservaId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.MetodosPago
+            return await _contexto.MetodosPago
                 .Where(m => m.ReservaId == reservaId)
                 .Include(m => m.Reserva)
                 .AsNoTracking()
@@ -143,8 +137,7 @@ namespace CarRental.Services
         // Obtener métodos de pago con estado pendiente
         public async Task<List<MetodoPago>> ObtenerMetodosPagoPendientes()
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.MetodosPago
+            return await _contexto.MetodosPago
                 .Where(m => m.EstadoTransaccion == "Pendiente")
                 .Include(m => m.Reserva)
                 .AsNoTracking()

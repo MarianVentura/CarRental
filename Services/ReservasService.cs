@@ -9,20 +9,19 @@ namespace CarRental.Services
 {
     public class ReservasService
     {
-        private readonly IDbContextFactory<Contexto> _dbFactory;
+        private readonly Contexto _contexto;
         private readonly ToastService _toastService;
 
-        public ReservasService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
+        public ReservasService(Contexto contexto, ToastService toastService)
         {
-            _dbFactory = dbFactory;
+            _contexto = contexto;
             _toastService = toastService;
         }
 
         // Obtener todas las reservas
         public async Task<List<Reserva>> ObtenerTodasLasReservas()
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
                 .AsNoTracking()
@@ -32,8 +31,7 @@ namespace CarRental.Services
         // Obtener una reserva por su ID
         public async Task<Reserva?> ObtenerReservaPorId(int id)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var reserva = await contexto.Reservas
+            var reserva = await _contexto.Reservas
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
                 .AsNoTracking()
@@ -70,11 +68,9 @@ namespace CarRental.Services
                 return false;
             }
 
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-
             // Validar existencia de Cliente y Vehículo
-            var clienteExiste = await contexto.Clientes.AnyAsync(c => c.ClienteId == reserva.ClienteId);
-            var vehiculoExiste = await contexto.Vehiculos.AnyAsync(v => v.VehiculoId == reserva.VehiculoId);
+            var clienteExiste = await _contexto.Clientes.AnyAsync(c => c.ClienteId == reserva.ClienteId);
+            var vehiculoExiste = await _contexto.Vehiculos.AnyAsync(v => v.VehiculoId == reserva.VehiculoId);
 
             if (!clienteExiste)
             {
@@ -88,8 +84,8 @@ namespace CarRental.Services
                 return false;
             }
 
-            contexto.Reservas.Add(reserva);
-            await contexto.SaveChangesAsync();
+            _contexto.Reservas.Add(reserva);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Reserva agregada exitosamente.");
             return true;
@@ -104,8 +100,7 @@ namespace CarRental.Services
                 return false;
             }
 
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var reservaExistente = await contexto.Reservas.FindAsync(reserva.ReservaId);
+            var reservaExistente = await _contexto.Reservas.FindAsync(reserva.ReservaId);
 
             if (reservaExistente == null)
             {
@@ -134,8 +129,8 @@ namespace CarRental.Services
             reservaExistente.Estado = reserva.Estado;
             reservaExistente.TotalPrecio = reserva.TotalPrecio;
 
-            contexto.Reservas.Update(reservaExistente);
-            await contexto.SaveChangesAsync();
+            _contexto.Reservas.Update(reservaExistente);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Reserva actualizada exitosamente.");
             return true;
@@ -144,8 +139,7 @@ namespace CarRental.Services
         // Eliminar una reserva por ID
         public async Task<bool> EliminarReserva(int reservaId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var reserva = await contexto.Reservas.FindAsync(reservaId);
+            var reserva = await _contexto.Reservas.FindAsync(reservaId);
 
             if (reserva == null)
             {
@@ -153,8 +147,8 @@ namespace CarRental.Services
                 return false;
             }
 
-            contexto.Reservas.Remove(reserva);
-            await contexto.SaveChangesAsync();
+            _contexto.Reservas.Remove(reserva);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Reserva eliminada exitosamente.");
             return true;
@@ -163,8 +157,7 @@ namespace CarRental.Services
         // Cambiar el estado de la reserva
         public async Task<bool> CambiarEstadoReserva(int reservaId, string nuevoEstado)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var reserva = await contexto.Reservas.FindAsync(reservaId);
+            var reserva = await _contexto.Reservas.FindAsync(reservaId);
 
             if (reserva == null)
             {
@@ -173,8 +166,8 @@ namespace CarRental.Services
             }
 
             reserva.Estado = nuevoEstado;
-            contexto.Reservas.Update(reserva);
-            await contexto.SaveChangesAsync();
+            _contexto.Reservas.Update(reserva);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess($"El estado de la reserva ha sido actualizado a {nuevoEstado}.");
             return true;
@@ -183,8 +176,7 @@ namespace CarRental.Services
         // Buscar reservas por cliente
         public async Task<List<Reserva>> BuscarReservasPorCliente(int clienteId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.ClienteId == clienteId)
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -195,8 +187,7 @@ namespace CarRental.Services
         // Obtener las reservas con estado pendiente
         public async Task<List<Reserva>> ObtenerReservasPendientes()
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == "Pendiente")
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -207,8 +198,7 @@ namespace CarRental.Services
         // Obtener todas las reservas activas
         public async Task<List<Reserva>> ObtenerReservasActivas()
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == "Activa")  // Ajusta la condición de estado según tu modelo
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -219,8 +209,7 @@ namespace CarRental.Services
         // Obtener reservas activas por cliente
         public async Task<List<Reserva>> ObtenerReservasActivasPorCliente(int clienteId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == "Activa" && r.ClienteId == clienteId)
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -231,8 +220,7 @@ namespace CarRental.Services
         // Obtener reservas pendientes por cliente
         public async Task<List<Reserva>> ObtenerReservasPendientesPorCliente(int clienteId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == "Pendiente" && r.ClienteId == clienteId)
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -243,8 +231,7 @@ namespace CarRental.Services
         // Obtener reservas activas por vehículo
         public async Task<List<Reserva>> ObtenerReservasActivasPorVehiculo(int vehiculoId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == "Activa" && r.VehiculoId == vehiculoId)
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -255,8 +242,7 @@ namespace CarRental.Services
         // Obtener reservas pendientes por vehículo
         public async Task<List<Reserva>> ObtenerReservasPendientesPorVehiculo(int vehiculoId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == "Pendiente" && r.VehiculoId == vehiculoId)
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -267,8 +253,7 @@ namespace CarRental.Services
         // Obtener reservas pendientes por estado
         public async Task<List<Reserva>> ObtenerReservasPendientesPorEstado(string estado)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == estado)
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)
@@ -279,8 +264,7 @@ namespace CarRental.Services
         // Obtener reservas activas por estado
         public async Task<List<Reserva>> ObtenerReservasActivasPorEstado(string estado)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Reservas
+            return await _contexto.Reservas
                 .Where(r => r.Estado == estado)
                 .Include(r => r.Cliente)
                 .Include(r => r.Vehiculo)

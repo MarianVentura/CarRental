@@ -7,34 +7,31 @@ namespace CarRental.Services;
 
 public class VehiculosService
 {
-    private readonly IDbContextFactory<Contexto> _dbFactory;
+    private readonly Contexto _contexto;
 
-    public VehiculosService(IDbContextFactory<Contexto> dbFactory)
+    public VehiculosService(Contexto contexto)
     {
-        _dbFactory = dbFactory;
+        _contexto = contexto;
     }
 
     // Verificar si existe un vehículo por ID
     public async Task<bool> Existe(int vehiculoId)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos.AnyAsync(v => v.VehiculoId == vehiculoId);
+        return await _contexto.Vehiculos.AnyAsync(v => v.VehiculoId == vehiculoId);
     }
 
     // Insertar un nuevo vehículo
     private async Task<bool> Insertar(Vehiculo vehiculo)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        contexto.Vehiculos.Add(vehiculo);
-        return await contexto.SaveChangesAsync() > 0;
+        _contexto.Vehiculos.Add(vehiculo);
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
     // Modificar un vehículo existente
     private async Task<bool> Modificar(Vehiculo vehiculo)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        contexto.Update(vehiculo);
-        return await contexto.SaveChangesAsync() > 0;
+        _contexto.Update(vehiculo);
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
     // Guardar un vehículo (insertar o modificar)
@@ -53,8 +50,7 @@ public class VehiculosService
     // Eliminar un vehículo
     public async Task<bool> EliminarVehiculo(Vehiculo vehiculo)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
+        return await _contexto.Vehiculos
             .AsNoTracking()
             .Where(v => v.VehiculoId == vehiculo.VehiculoId)
             .ExecuteDeleteAsync() > 0;
@@ -63,8 +59,7 @@ public class VehiculosService
     // Buscar un vehículo por ID
     public async Task<Vehiculo?> Buscar(int vehiculoId)
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
+        return await _contexto.Vehiculos
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.VehiculoId == vehiculoId);
     }
@@ -77,8 +72,7 @@ public class VehiculosService
             return new List<Vehiculo>();
         }
 
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
+        return await _contexto.Vehiculos
             .Where(v => v.Marca.Contains(marca))
             .AsNoTracking()
             .ToListAsync();
@@ -87,19 +81,16 @@ public class VehiculosService
     // Listar vehículos con un criterio específico
     public async Task<List<Vehiculo>> ListaVehiculos()
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
+        return await _contexto.Vehiculos
             .AsNoTracking()
             .ToListAsync();
     }
 
+    // Obtener todos los vehículos
     public async Task<List<Vehiculo>> ObtenerVehiculos()
     {
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Vehiculos
+        return await _contexto.Vehiculos
             .AsNoTracking()
             .ToListAsync();
-
-
     }
 }

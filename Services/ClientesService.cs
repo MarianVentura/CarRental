@@ -10,20 +10,19 @@ namespace CarRental.Services
 {
     public class ClienteService
     {
-        private readonly IDbContextFactory<Contexto> _dbFactory;
+        private readonly Contexto _contexto;
         private readonly ToastService _toastService;
 
-        public ClienteService(IDbContextFactory<Contexto> dbFactory, ToastService toastService)
+        public ClienteService(Contexto contexto, ToastService toastService)
         {
-            _dbFactory = dbFactory;
+            _contexto = contexto;
             _toastService = toastService;
         }
 
         // Obtener todos los clientes
         public async Task<List<Cliente>> ObtenerTodosLosClientes()
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Clientes
+            return await _contexto.Clientes
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -31,8 +30,7 @@ namespace CarRental.Services
         // Obtener un cliente por ID
         public async Task<Cliente?> ObtenerClientePorId(int id)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var cliente = await contexto.Clientes
+            var cliente = await _contexto.Clientes
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.ClienteId == id);
 
@@ -67,9 +65,8 @@ namespace CarRental.Services
                 return false;
             }
 
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            contexto.Clientes.Add(cliente);
-            await contexto.SaveChangesAsync();
+            _contexto.Clientes.Add(cliente);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Cliente agregado exitosamente.");
             return true;
@@ -97,8 +94,7 @@ namespace CarRental.Services
                 return false;
             }
 
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var clienteExistente = await contexto.Clientes.FindAsync(cliente.ClienteId);
+            var clienteExistente = await _contexto.Clientes.FindAsync(cliente.ClienteId);
 
             if (clienteExistente == null)
             {
@@ -113,8 +109,8 @@ namespace CarRental.Services
             clienteExistente.Direccion = cliente.Direccion;
             clienteExistente.Identificacion = cliente.Identificacion;
 
-            contexto.Clientes.Update(clienteExistente);
-            await contexto.SaveChangesAsync();
+            _contexto.Clientes.Update(clienteExistente);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Cliente actualizado exitosamente.");
             return true;
@@ -123,8 +119,7 @@ namespace CarRental.Services
         // Eliminar un cliente por ID
         public async Task<bool> EliminarCliente(int clienteId)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            var cliente = await contexto.Clientes.FindAsync(clienteId);
+            var cliente = await _contexto.Clientes.FindAsync(clienteId);
 
             if (cliente == null)
             {
@@ -132,8 +127,8 @@ namespace CarRental.Services
                 return false;
             }
 
-            contexto.Clientes.Remove(cliente);
-            await contexto.SaveChangesAsync();
+            _contexto.Clientes.Remove(cliente);
+            await _contexto.SaveChangesAsync();
 
             _toastService.ShowSuccess("Cliente eliminado exitosamente.");
             return true;
@@ -142,8 +137,7 @@ namespace CarRental.Services
         // Buscar clientes por nombre
         public async Task<List<Cliente>> BuscarClientesPorNombre(string nombre)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Clientes
+            return await _contexto.Clientes
                 .Where(c => c.Nombres.Contains(nombre))
                 .AsNoTracking()
                 .ToListAsync();
@@ -152,8 +146,7 @@ namespace CarRental.Services
         // Obtener clientes por tipo de identificación
         public async Task<List<Cliente>> ObtenerClientesPorTipoIdentificacion(string tipoIdentificacion)
         {
-            await using var contexto = await _dbFactory.CreateDbContextAsync();
-            return await contexto.Clientes
+            return await _contexto.Clientes
                 .Where(c => c.Identificacion == tipoIdentificacion)
                 .AsNoTracking()
                 .ToListAsync();
