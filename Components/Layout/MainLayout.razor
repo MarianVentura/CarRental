@@ -1,39 +1,48 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
-<!-- Contenedor de la barra de navegación con imagen de fondo -->
-<div id="navbar-container">
-    <div class="navbar navbar-expand-lg fixed-top custom-navbar" id="NavigationBar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/" style="font-family: 'Poppins', sans-serif;">
-                <i class="bi bi-car-front"></i> CarRental
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                            <i class="bi bi-house-door"></i> Inicio
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="https://wa.me/18096680075" Match="NavLinkMatch.All">
-                            <i class="bi bi-whatsapp"></i> Contactos
-                        </NavLink>
-                    </li>
-                </ul>
+<!-- Mostrar el navbar con imagen de fondo solo si no estamos en la página de inicio -->
+@if (!IsHomePage)
+{
+    <div id="navbar-container">
+        <div class="navbar navbar-expand-lg fixed-top custom-navbar" id="NavigationBar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/" style="font-family: 'Poppins', sans-serif;">
+                    <i class="bi bi-car-front"></i> CarRental
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                                <i class="bi bi-house-door"></i> Inicio
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="https://wa.me/18095842345" Match="NavLinkMatch.All">
+                                <i class="bi bi-whatsapp"></i> Contactos
+                            </NavLink>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 <!-- Contenido principal -->
-<main class="flex-grow-1 p-4 mt-5 pt-5">
+<main class="flex-grow-1 p-4 @(IsHomePage ? "" : "mt-5 pt-5")">
     <article class="content">
         @Body
     </article>
 </main>
+
+@code {
+    private bool IsHomePage => NavigationManager.Uri.EndsWith("/") || NavigationManager.Uri.EndsWith("/home", StringComparison.OrdinalIgnoreCase);
+}
+
 
 <style>
     /* Barra de navegación con imagen de fondo */
