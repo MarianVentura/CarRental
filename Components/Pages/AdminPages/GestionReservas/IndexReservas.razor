@@ -1,0 +1,265 @@
+﻿@page "/Admin/Reservations"
+@inject ReservasService ReservasService
+@inject NavigationManager NavigationManager
+@inject ToastService ToastService
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Gestión de Reservas</PageTitle>
+
+<div class="container mt-5">
+    <!-- Botón de regreso -->
+    <a href="/Index/Admin" class="btn btn-success back-button mt-5">
+        <i class="fa-solid fa-backward"></i> Regresar
+    </a>
+
+    <div class="card text-center">
+        <div class="card-header">
+            <h2>Gestión de Reservas</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <select @bind="filtro" class="form-select">
+                        <option value="" disabled selected>Filtrar por:</option>
+                        <option value="cliente">Cliente</option>
+                        <option value="vehiculo">Vehículo</option>
+                        <option value="estado">Estado</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                        <button @onclick="Buscar" class="btn btn-outline-secondary" type="button">
+                            <span class="bi bi-search"></span> Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2 text-end">
+                    <button class="btn btn-success" @onclick="AgregarReserva">
+                        <i class="bi bi-plus-circle"></i> Agregar Reserva
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reservas Pendientes -->
+            <h4 class="mt-4">Reservas Pendientes</h4>
+            @if (reservasPendientes != null && reservasPendientes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Vehículo</th>
+                                <th>Fecha de Recogida</th>
+                                <th>Fecha de Devolución</th>
+                                <th>Precio Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reserva in reservasPendientes)
+                            {
+                                <tr>
+                                    <td>@reserva.Cliente.Nombres</td>
+                                    <td>@reserva.Vehiculo.Modelo</td>
+                                    <td>@reserva.FechaRecogida.ToString("dd/MM/yyyy")</td>
+                                    <td>@reserva.FechaDevolucion.ToString("dd/MM/yyyy")</td>
+                                    <td>@reserva.TotalPrecio.ToString("C")</td>
+                                    <td>@reserva.Estado</td>
+                                    <td>
+                                        <button class="btn btn-warning" @onclick="() => EditarReserva(reserva.ReservaId)">Editar</button>
+                                        <button class="btn btn-danger" @onclick="() => EliminarReserva(reserva.ReservaId)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No hay reservas pendientes.</p>
+            }
+
+            <!-- Reservas Activas -->
+            <h4 class="mt-4">Reservas Activas</h4>
+            @if (reservasActivas != null && reservasActivas.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Vehículo</th>
+                                <th>Fecha de Recogida</th>
+                                <th>Fecha de Devolución</th>
+                                <th>Precio Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reserva in reservasActivas)
+                            {
+                                <tr>
+                                    <td>@reserva.Cliente.Nombres</td>
+                                    <td>@reserva.Vehiculo.Modelo</td>
+                                    <td>@reserva.FechaRecogida.ToString("dd/MM/yyyy")</td>
+                                    <td>@reserva.FechaDevolucion.ToString("dd/MM/yyyy")</td>
+                                    <td>@reserva.TotalPrecio.ToString("C")</td>
+                                    <td>@reserva.Estado</td>
+                                    <td>
+                                        <button class="btn btn-warning" @onclick="() => EditarReserva(reserva.ReservaId)">Editar</button>
+                                        <button class="btn btn-danger" @onclick="() => EliminarReserva(reserva.ReservaId)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No hay reservas activas.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Reserva> reservasPendientes;
+    private List<Reserva> reservasActivas;
+    private string filtro = "cliente";
+    private string valorFiltro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reservasPendientes = await ReservasService.ObtenerReservasPendientes();
+        reservasActivas = await ReservasService.ObtenerReservasActivas();
+    }
+
+    private async Task AgregarReserva()
+    {
+        NavigationManager.NavigateTo("/reservas/agregar");
+    }
+
+    private async Task EditarReserva(int reservaId)
+    {
+        NavigationManager.NavigateTo($"/reservas/editar/{reservaId}");
+    }
+
+    private async Task EliminarReserva(int reservaId)
+    {
+        var confirm = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { "¿Está seguro de que desea eliminar esta reserva?" });
+        if (confirm)
+        {
+            var result = await ReservasService.EliminarReserva(reservaId);
+            if (result)
+            {
+                reservasPendientes = await ReservasService.ObtenerReservasPendientes();
+                reservasActivas = await ReservasService.ObtenerReservasActivas();
+                ToastService.ShowSuccess("Reserva eliminada con éxito.");
+            }
+            else
+            {
+                ToastService.ShowError("Hubo un error al eliminar la reserva.");
+            }
+        }
+        else
+        {
+            ToastService.ShowWarning("Eliminación de reserva cancelada.");
+        }
+    }
+
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "cliente")
+            {
+                if (int.TryParse(valorFiltro, out int clienteId))
+                {
+                    reservasPendientes = await ReservasService.ObtenerReservasPendientesPorCliente(clienteId);
+                    reservasActivas = await ReservasService.ObtenerReservasActivasPorCliente(clienteId);
+                }
+                else
+                {
+                    ToastService.ShowError("El ID del cliente no es válido.");
+                }
+            }
+            else if (filtro == "vehiculo")
+            {
+                // reservasPendientes = await ReservasService.ObtenerReservasPendientesPorVehiculo(valorFiltro);
+                // reservasActivas = await ReservasService.ObtenerReservasActivasPorVehiculo(valorFiltro);
+            }
+            else if (filtro == "estado")
+            {
+                reservasPendientes = await ReservasService.ObtenerReservasPendientesPorEstado(valorFiltro);
+                reservasActivas = await ReservasService.ObtenerReservasActivasPorEstado(valorFiltro);
+            }
+        }
+        else
+        {
+            reservasPendientes = await ReservasService.ObtenerReservasPendientes();
+            reservasActivas = await ReservasService.ObtenerReservasActivas();
+        }
+    }
+}
+
+<style>
+    .card {
+        border-radius: 15px;
+        margin-top: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+    }
+
+    .card-header {
+        background-color: #FF9F1C;
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 1rem;
+    }
+
+    .card-body {
+        font-family: 'Poppins', sans-serif;
+        padding: 2rem;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .table thead {
+        background-color: #FF9F1C;
+        color: white;
+    }
+
+    button {
+        transition: background-color 0.3s ease;
+    }
+
+        button:hover {
+            background-color: #FF9F1C;
+        }
+
+    .form-select, .form-control {
+        border-radius: 10px;
+    }
+
+    .input-group {
+        border-radius: 10px;
+    }
+
+    .back-button {
+        font-size: 18px;
+        background-color: #2ec4b6;
+        color: white;
+    }
+
+        .back-button:hover {
+            background-color: #FF9F1C;
+        }
+</style>
