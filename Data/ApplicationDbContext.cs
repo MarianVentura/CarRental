@@ -20,7 +20,6 @@ namespace CarRental.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuración de relaciones
             modelBuilder.Entity<Reserva>()
                 .HasOne(r => r.Cliente)
                 .WithMany()
