@@ -1,0 +1,50 @@
+﻿@page "/historial-de-pagos"
+@inject MetodoPagoService MetodoPagoService
+@inject ClienteService ClienteService
+@inject VehiculosService VehiculosService
+
+<PageTitle>Historial de Pagos</PageTitle>
+
+<div>
+    <h3>Historial de Pagos</h3>
+
+    <!-- Tabla de pagos -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Vehículo</th>
+                <th>Tipo de Pago</th>
+                <th>Fecha de Transacción</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Proveedor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pago in pagos)
+            {
+                <tr>
+                    <td>@pago.Reserva.Cliente.Nombres</td>
+                    <td>@pago.Reserva.Vehiculo.Marca @pago.Reserva.Vehiculo.Modelo</td>
+                    <td>@pago.Tipo</td>
+                    <td>@pago.FechaTransaccion.ToString("dd/MM/yyyy")</td>
+                    <td>@pago.Monto.ToString("C")</td>
+                    <td>@pago.EstadoTransaccion</td>
+                    <td>@pago.ProveedorPago</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<MetodoPago> pagos = new List<MetodoPago>();
+
+    // Cargar el historial de pagos
+    protected override async Task OnInitializedAsync()
+    {
+        // Obtener todos los métodos de pago
+        pagos = await MetodoPagoService.ObtenerTodosLosMetodosPago();
+    }
+}
