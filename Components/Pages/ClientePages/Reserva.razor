@@ -1,0 +1,107 @@
+﻿@* @page "/reserva/{vehiculoId}"
+@using CarRental.Models
+@using CarRental.Services
+@inject VehiculosService VehiculosService
+@inject MetodoPagoService MetodoPagoService
+@inject NavigationManager Navigation
+
+<PageTitle>Reserva de Vehículo</PageTitle>
+
+<h1>Reserva de Vehículo</h1>
+
+@if (vehiculo == null)
+{
+    <p>Cargando detalles del vehículo...</p>
+}
+else
+{
+    <div class="card shadow-sm">
+        <!-- Imagen y detalles del vehículo -->
+        <img src="@vehiculo.Imagen" class="card-img-top" alt="@vehiculo.Marca @vehiculo.Modelo" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+            <h5 class="card-title">@vehiculo.Marca @vehiculo.Modelo</h5>
+            <p class="card-text">
+                <strong>Año:</strong> @vehiculo.Año<br />
+                <strong>Transmisión:</strong> @vehiculo.TipoTransmision ?? "No disponible"<br />
+                <strong>Combustible:</strong> @vehiculo.Combustible<br />
+                <strong>Color:</strong> @vehiculo.Color<br />
+                <strong>Precio por Día:</strong> @vehiculo.PrecioPorDia:C
+            </p>
+
+            <h4>Detalles de la Reserva</h4>
+            <div class="form-group">
+                <label for="fechaRecogida">Fecha de Recogida</label>
+                <input type="date" class="form-control" id="fechaRecogida" @bind="fechaRecogida" required />
+            </div>
+            <div class="form-group">
+                <label for="fechaDevolucion">Fecha de Devolución</label>
+                <input type="date" class="form-control" id="fechaDevolucion" @bind="fechaDevolucion" required />
+            </div>
+            <div class="form-group">
+                <label for="metodoPago">Método de Pago</label>
+                <select class="form-control" id="metodoPago" @bind="metodoPagoId">
+                    @foreach (var metodo in metodosPago)
+                    {
+                        <option value="@metodo.MetodoPagoId">@metodo.ProveedorPago - @metodo.EstadoTransaccion</option>
+                    }
+                </select>
+            </div>
+
+            <button class="btn btn-primary" @onclick="RealizarReserva">Confirmar Reserva</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int vehiculoId { get; set; }
+    private Vehiculo? vehiculo;
+    private DateTime fechaRecogida = DateTime.Now;
+    private DateTime fechaDevolucion = DateTime.Now.AddDays(1);
+    private int metodoPagoId;
+    private List<MetodoPago> metodosPago = new List<MetodoPago>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar el vehículo seleccionado
+        vehiculo = await VehiculosService.Buscar(vehiculoId);
+
+        // Cargar los métodos de pago disponibles
+        metodosPago = await MetodoPagoService.ObtenerMetodosPagoPendientes();
+    }
+
+    private async Task RealizarReserva()
+    {
+        if (vehiculo == null)
+        {
+            return;
+        }
+
+        // Validar que las fechas de recogida y devolución son válidas
+        if (fechaDevolucion <= fechaRecogida)
+        {
+            // Mostrar un mensaje de error (puedes usar un ToastService o algún otro método)
+            return;
+        }
+
+        // Calcular el precio total
+        var totalPrecio = (fechaDevolucion - fechaRecogida).Days * vehiculo.PrecioPorDia;
+
+        // Crear la reserva
+        var reserva = new Reserva
+            {
+                VehiculoId = vehiculo.VehiculoId,
+                FechaRecogida = fechaRecogida,
+                FechaDevolucion = fechaDevolucion,
+                MetodoPagoId = metodoPagoId,
+                TotalPrecio = totalPrecio,
+                Estado = "Pendiente" // Puedes ajustar el estado de acuerdo a tu lógica
+            };
+
+        // Aquí debes guardar la reserva en la base de datos (llamando al servicio correspondiente)
+        // Por ejemplo: await ReservaService.CrearReserva(reserva);
+
+        // Después de realizar la reserva, puedes navegar a una página de confirmación o de inicio
+        Navigation.NavigateTo("/confirmacion");
+    }
+}
+ *@
