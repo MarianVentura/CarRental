@@ -57,7 +57,7 @@ namespace CarRental.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombres = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Identificacion = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
@@ -73,12 +73,12 @@ namespace CarRental.Migrations
                 {
                     VehiculoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Marca = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Marca = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Modelo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Año = table.Column<int>(type: "int", nullable: false),
                     PrecioPorDia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Disponible = table.Column<bool>(type: "bit", nullable: false),
-                    Imagen = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Imagen = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Combustible = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TipoTransmision = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -202,7 +202,7 @@ namespace CarRental.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VehiculoId = table.Column<int>(type: "int", nullable: false),
                     FechaMantenimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Costo = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
@@ -243,7 +243,7 @@ namespace CarRental.Migrations
                         column: x => x.VehiculoId,
                         principalTable: "Vehiculos",
                         principalColumn: "VehiculoId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -328,11 +328,6 @@ namespace CarRental.Migrations
                 name: "IX_Reservas_VehiculoId",
                 table: "Reservas",
                 column: "VehiculoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vehiculo_Marca",
-                table: "Vehiculos",
-                column: "Marca");
         }
 
         /// <inheritdoc />

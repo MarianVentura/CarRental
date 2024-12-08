@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20241207202206_Inicial")]
+    [Migration("20241208141500_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -105,8 +105,7 @@ namespace CarRental.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Identificacion")
                         .IsRequired()
@@ -140,8 +139,7 @@ namespace CarRental.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FechaMantenimiento")
                         .HasColumnType("datetime2");
@@ -252,12 +250,11 @@ namespace CarRental.Migrations
 
                     b.Property<string>("Imagen")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Marca")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Modelo")
                         .IsRequired()
@@ -271,9 +268,6 @@ namespace CarRental.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("VehiculoId");
-
-                    b.HasIndex("Marca")
-                        .HasDatabaseName("IX_Vehiculo_Marca");
 
                     b.ToTable("Vehiculos");
                 });
@@ -444,7 +438,7 @@ namespace CarRental.Migrations
                     b.HasOne("CarRental.Models.Vehiculo", "Vehiculo")
                         .WithMany()
                         .HasForeignKey("VehiculoId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cliente");
