@@ -1,6 +1,7 @@
 # Proyecto Final_DriverChoice
 
-![DriverChoice](C:\Users\DELL LATITUDE\OneDrive\Imágenes)
+(![DriverChoice](https://github.com/user-attachments/assets/a07d647c-a183-4373-bde0-cc647b95e2aa))
+
 
 - **1** Página de inicio atractiva: Diseño llamativo con ofertas destacadas y un buscador rápido para facilitar la navegación.
 - **2**Búsqueda avanzada: Filtros detallados como tipo de vehículo, rango de precios, marcas, capacidad y ubicación para encontrar el auto ideal.
