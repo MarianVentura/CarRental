@@ -1,6 +1,6 @@
 # Proyecto Final_DriverChoice
 
-(![DriverChoice](https://github.com/user-attachments/assets/a07d647c-a183-4373-bde0-cc647b95e2aa))
+![DriverChoice](https://github.com/user-attachments/assets/a07d647c-a183-4373-bde0-cc647b95e2aa)
 
 
 - **1** Página de inicio atractiva: Diseño llamativo con ofertas destacadas y un buscador rápido para facilitar la navegación.
